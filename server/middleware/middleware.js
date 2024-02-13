@@ -84,7 +84,7 @@ module.exports = {
       if (err) {
         return resSend(res, false, null, 'Invalid token');
       }
-      req.user = user;
+      req.user = item;
       next();
     });
   },

@@ -106,10 +106,29 @@ module.exports = {
         createdBy: userId,
       });
       await newPost.save();
-      return res, true, { post: newPost }, 'Post created';
+      return resSend(res, true, { post: newPost }, 'Post created');
     } catch (error) {
       console.error(error);
       return resSend(res, false, null, 'Error creating post');
+    }
+  },
+  sendMessage: async (req, res) => {
+    try {
+      const { recipientId, content } = req.body;
+      const senderId = req.user._id;
+
+      const newMessage = new messageSchema({
+        sender: senderId,
+        recipient: recipientId,
+        content: content,
+      });
+
+      await newMessage.save();
+
+      resSend(res, true, { message: newMessage }, 'Message sent successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error sending message');
     }
   },
 };
