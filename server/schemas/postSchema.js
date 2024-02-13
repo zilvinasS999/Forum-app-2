@@ -7,6 +7,11 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
+    topic: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Topic',
+      required: true,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

@@ -12,4 +12,4 @@ const topicSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('topic', userSchema);
+module.exports = mongoose.model('topic', topicSchema);
