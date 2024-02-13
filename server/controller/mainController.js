@@ -84,4 +84,32 @@ module.exports = {
       resSend(res, false, null, 'Error creating topic', 500);
     }
   },
+  createPost: async (req, res) => {
+    try {
+      const { content } = req.body;
+      const { topicId } = req.params;
+
+      if (!content) {
+        return resSend(res, false, null, 'Posts cannot be empty');
+      }
+
+      const topicExists = await topicSchema.findById(topicId);
+      if (!topicExists) {
+        return resSend(res, false, null, 'Topic does not exist');
+      }
+
+      const userId = req.user._id;
+
+      const newPost = new postSchema({
+        content: content,
+        topic: topicId,
+        createdBy: userId,
+      });
+      await newPost.save();
+      return res, true, { post: newPost }, 'Post created';
+    } catch (error) {
+      console.error(error);
+      return resSend(res, false, null, 'Error creating post');
+    }
+  },
 };

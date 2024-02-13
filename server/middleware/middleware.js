@@ -77,4 +77,15 @@ module.exports = {
     }
     next();
   },
+  tokenAuth: (req, res, next) => {
+    const token = req.headers.authorization;
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, item) => {
+      if (err) {
+        return resSend(res, false, null, 'Invalid token');
+      }
+      req.user = user;
+      next();
+    });
+  },
 };
