@@ -6,6 +6,10 @@ const {
   login,
   createPost,
   sendMessage,
+  getAllTopics,
+  getTopicById,
+  getPostsByTopic,
+  getPostById,
 } = require('../controller/mainController');
 
 const {
@@ -18,3 +22,8 @@ router.post('/register', registerValidate, registerUser);
 router.post('/login', loginValidate, login);
 router.post('/topics/:topicId/posts', tokenAuth, createPost);
 router.post('/messages/send', tokenAuth, sendMessage);
+
+router.get('/topics', getAllTopics);
+router.get('/topics/:topicId', getTopicById);
+router.get('/topics/:topicId/posts', getPostsByTopic);
+router.get('/posts/:postId', getPostById);

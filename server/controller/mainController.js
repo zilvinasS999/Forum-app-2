@@ -131,4 +131,58 @@ module.exports = {
       resSend(res, false, null, 'Error sending message');
     }
   },
+  getAllTopics: async (req, res) => {
+    try {
+      const topics = await topicSchema.find({});
+      resSend(res, true, { topics }, 'Fetched all topics successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error fetching topics');
+    }
+  },
+  getTopicById: async (req, res) => {
+    try {
+      const { topicId } = req.params;
+      const topic = await topicSchema.findById(topicId);
+      if (!topic) {
+        return resSend(res, false, null, 'Topic not found');
+      }
+      resSend(res, true, { topic }, 'Fetched topic successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error fetching topic');
+    }
+  },
+  getPostsByTopic: async (req, res) => {
+    try {
+      const { topicId } = req.params;
+      const posts = await postSchema
+        .find({ topic: topicId })
+        .populate('createdBy', 'username');
+      resSend(
+        res,
+        true,
+        { posts },
+        'Fetched all posts for the topic successfully'
+      );
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error fetching posts for the topic');
+    }
+  },
+  getPostById: async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const post = await postSchema
+        .findById(postId)
+        .populate('createdBy', 'username');
+      if (!post) {
+        return resSend(res, false, null, 'Post not found');
+      }
+      resSend(res, true, { post }, 'Fetched post successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error fetching post');
+    }
+  },
 };

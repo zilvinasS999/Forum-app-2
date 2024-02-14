@@ -80,11 +80,11 @@ module.exports = {
   tokenAuth: (req, res, next) => {
     const token = req.headers.authorization;
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, item) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         return resSend(res, false, null, 'Invalid token');
       }
-      req.user = item;
+      req.user = decoded;
       next();
     });
   },
