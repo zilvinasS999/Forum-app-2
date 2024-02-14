@@ -1,18 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
+const { registerUser, login } = require('../controllers/userController');
 const {
-  registerUser,
-  login,
-  createPost,
-  sendMessage,
+  createTopic,
   getAllTopics,
   getTopicById,
+} = require('../controllers/topicController');
+const {
+  createPost,
   getPostsByTopic,
   getPostById,
+} = require('../controllers/postController');
+const {
+  sendMessage,
   getMessagesBetweenUsers,
   getMessagesForUser,
-} = require('../controller/mainController');
+} = require('../controllers/messageController');
 
 const {
   registerValidate,
