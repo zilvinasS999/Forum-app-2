@@ -65,4 +65,24 @@ module.exports = {
       resSend(res, false, null, 'Error fetching user profile');
     }
   },
+  updateUserProfile: async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const { newImage, username, email } = req.body;
+
+      const updatedUser = await userSchema.findByIdAndUpdate(
+        userId,
+        { image: newImage, username, email },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedUser) {
+        return resSend(res, false, null, 'User not found');
+      }
+      resSend(res, true, { updatedUser }, 'User profile updated successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error updating user profile');
+    }
+  },
 };

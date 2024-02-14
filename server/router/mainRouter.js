@@ -5,6 +5,7 @@ const {
   registerUser,
   login,
   getUserProfile,
+  updateUserProfile,
 } = require('../controllers/userController');
 const {
   createTopic,
@@ -45,3 +46,4 @@ router.get('/users/:userId', tokenAuth, getUserProfile);
 
 router.put('/topics/:topicId', tokenAuth, updateTopicTitle);
 router.put('/posts/:postId', tokenAuth, updatePostContent);
+router.put('/user/profile', tokenAuth, updateUserProfile);
