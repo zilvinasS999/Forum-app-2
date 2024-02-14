@@ -7,6 +7,11 @@ module.exports = {
       const { recipientId, content } = req.body;
       const senderId = req.user._id;
 
+      const recipientExists = await userSchema.findById(recipientId);
+      if (!recipientExists) {
+        return resSend(res, false, null, 'Recipient does not exist');
+      }
+
       const newMessage = new messageSchema({
         sender: senderId,
         recipient: recipientId,

@@ -5,15 +5,13 @@ module.exports = {
   createTopic: async (req, res) => {
     try {
       const { title } = req.body;
-      console.log(req.body);
 
       if (req.user.role !== 'admin') {
         return resSend(
           res,
           false,
           null,
-          'Topics can only be created by admins',
-          403
+          'Topics can only be created by admins'
         );
       }
 
@@ -50,6 +48,35 @@ module.exports = {
     } catch (error) {
       console.error(error);
       resSend(res, false, null, 'Error fetching topic');
+    }
+  },
+  updateTopicTitle: async (req, res) => {
+    try {
+      const { topicId } = req.params;
+      const { newTitle } = req.body;
+
+      if (req.user.role !== 'admin') {
+        return resSend(
+          res,
+          false,
+          null,
+          'Only admins can update the topic title'
+        );
+      }
+
+      const updatedTopic = await topicSchema.findByIdAndUpdate(
+        topicId,
+        { title: newTitle },
+        { new: true }
+      );
+
+      if (!updatedTopic) {
+        return resSend(res, false, null, 'Topic was not found');
+      }
+      resSend(res, true, { updatedTopic }, 'Topic title updated successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error updating topic title');
     }
   },
 };

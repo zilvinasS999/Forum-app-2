@@ -1,16 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
-const { registerUser, login } = require('../controllers/userController');
+const {
+  registerUser,
+  login,
+  getUserProfile,
+} = require('../controllers/userController');
 const {
   createTopic,
   getAllTopics,
   getTopicById,
+  updateTopicTitle,
 } = require('../controllers/topicController');
 const {
   createPost,
   getPostsByTopic,
   getPostById,
+  updatePostContent,
 } = require('../controllers/postController');
 const {
   sendMessage,
@@ -35,3 +41,7 @@ router.get('/topics/:topicId/posts', getPostsByTopic);
 router.get('/posts/:postId', getPostById);
 router.get('/messages/:userOneId/:userTwoId', getMessagesBetweenUsers);
 router.get('/messages/:userId', getMessagesForUser);
+router.get('/users/:userId', tokenAuth, getUserProfile);
+
+router.put('/topics/:topicId', tokenAuth, updateTopicTitle);
+router.put('/posts/:postId', tokenAuth, updatePostContent);

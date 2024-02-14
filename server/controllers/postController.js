@@ -63,4 +63,29 @@ module.exports = {
       resSend(res, false, null, 'Error fetching post');
     }
   },
+  updatePostContent: async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const { newContent } = req.body;
+      const userId = req.user._id;
+
+      const post = await postSchema.findById(postId);
+
+      if (!post) {
+        return resSend(res, false, null, 'Post not found');
+      }
+
+      if (post.createdBy.toString() !== userId.toString()) {
+        return resSend(res, false, null, 'Unauthorized to edit this post');
+      }
+
+      post.content = newContent;
+      await post.save();
+
+      resSend(res, true, { post }, 'Post updated successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error updating post content');
+    }
+  },
 };

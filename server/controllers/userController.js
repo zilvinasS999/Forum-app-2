@@ -5,7 +5,6 @@ const userSchema = require('../schemas/userSchema');
 
 module.exports = {
   registerUser: async (req, res) => {
-    console.log(req.body);
     try {
       const { username, passwordOne, role } = req.body;
 
@@ -33,7 +32,6 @@ module.exports = {
     }
   },
   login: async (req, res) => {
-    console.log(req.body);
     try {
       const { username, password } = req.body;
 
@@ -51,6 +49,20 @@ module.exports = {
     } catch (error) {
       console.error(error);
       resSend(res, false, null, 'Error during login');
+    }
+  },
+  getUserProfile: async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      const userProfile = await userSchema.findById(userId).populate('posts');
+
+      if (!userProfile) {
+        return resSend(res, false, null, 'User not found');
+      }
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error fetching user profile');
     }
   },
 };
