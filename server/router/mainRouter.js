@@ -10,6 +10,8 @@ const {
   getTopicById,
   getPostsByTopic,
   getPostById,
+  getMessagesBetweenUsers,
+  getMessagesForUser,
 } = require('../controller/mainController');
 
 const {
@@ -27,3 +29,5 @@ router.get('/topics', getAllTopics);
 router.get('/topics/:topicId', getTopicById);
 router.get('/topics/:topicId/posts', getPostsByTopic);
 router.get('/posts/:postId', getPostById);
+router.get('/messages/:userOneId/:userTwoId', getMessagesBetweenUsers);
+router.get('/messages/:userId', getMessagesForUser);
