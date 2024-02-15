@@ -6,6 +6,9 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: true,
+      unique: true,
+      minlength: 4,
+      maxlength: 20,
     },
     password: {
       type: String,
@@ -25,8 +28,14 @@ const userSchema = new Schema(
         ref: 'Post',
       },
     ],
+    topics: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Topic',
+      },
+    ],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('myUsersAuth', userSchema);
+module.exports = mongoose.model('User', userSchema);

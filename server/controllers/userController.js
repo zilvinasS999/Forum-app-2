@@ -6,9 +6,7 @@ const userSchema = require('../schemas/userSchema');
 module.exports = {
   registerUser: async (req, res) => {
     try {
-      const { username, passwordOne, role } = req.body;
-
-      const userRole = role === 'admin' ? 'admin' : 'regular';
+      const { username, passwordOne } = req.body;
 
       const userExists = await userSchema.findOne({ username });
 
@@ -20,7 +18,7 @@ module.exports = {
       const newUser = new userSchema({
         username,
         password,
-        role: userRole,
+        role: 'regular',
       });
 
       await newUser.save();
@@ -43,7 +41,10 @@ module.exports = {
 
       if (!passwordGood) return resSend(res, false, null, 'Bad auth');
 
-      const token = jwt.sign({ username }, process.env.JWT_SECRET);
+      const token = jwt.sign(
+        { _id: user._id, username },
+        process.env.JWT_SECRET
+      );
 
       return resSend(res, true, { token, username }, 'all good');
     } catch (error) {
@@ -55,11 +56,15 @@ module.exports = {
     try {
       const { userId } = req.params;
 
-      const userProfile = await userSchema.findById(userId).populate('posts');
+      const userProfile = await userSchema
+        .findById(userId)
+        .populate('posts')
+        .populate({ path: 'topics', match: { createdBy: userId } });
 
       if (!userProfile) {
         return resSend(res, false, null, 'User not found');
       }
+      resSend(res, true, { userProfile }, 'User profile fetched successfully');
     } catch (error) {
       console.error(error);
       resSend(res, false, null, 'Error fetching user profile');
@@ -68,11 +73,11 @@ module.exports = {
   updateUserProfile: async (req, res) => {
     try {
       const userId = req.user._id;
-      const { newImage, username, email } = req.body;
+      const { newImage, username } = req.body;
 
       const updatedUser = await userSchema.findByIdAndUpdate(
         userId,
-        { image: newImage, username, email },
+        { image: newImage, username },
         { new: true, runValidators: true }
       );
 

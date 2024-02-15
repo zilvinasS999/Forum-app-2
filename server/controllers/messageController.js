@@ -69,4 +69,45 @@ module.exports = {
       resSend(res, false, null, 'Error fetching messages for the user');
     }
   },
+  updateMessageReadStatus: async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      const updatedMessage = await messageSchema.findByIdAndUpdate(
+        messageId,
+        { read: true },
+        { new: true }
+      );
+
+      if (!updatedMessage) {
+        return resSend(res, false, null, 'Message not found');
+      }
+      resSend(
+        res,
+        true,
+        { updatedMessage },
+        'Message read status updated successfully'
+      );
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error updating message read status');
+    }
+  },
+  getUnreadMessageCount: async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const unreadCount = await messageSchema.countDocuments({
+        recipient: userId,
+        read: false,
+      });
+      resSend(
+        res,
+        true,
+        { unreadCount },
+        'Unread messages count fetched successfully'
+      );
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error fetching unread messages count');
+    }
+  },
 };

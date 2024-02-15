@@ -12,6 +12,7 @@ const {
   getAllTopics,
   getTopicById,
   updateTopicTitle,
+  getAllTopicCounts,
 } = require('../controllers/topicController');
 const {
   createPost,
@@ -23,6 +24,8 @@ const {
   sendMessage,
   getMessagesBetweenUsers,
   getMessagesForUser,
+  updateMessageReadStatus,
+  getUnreadMessageCount,
 } = require('../controllers/messageController');
 
 const {
@@ -43,7 +46,11 @@ router.get('/posts/:postId', getPostById);
 router.get('/messages/:userOneId/:userTwoId', getMessagesBetweenUsers);
 router.get('/messages/:userId', getMessagesForUser);
 router.get('/users/:userId', tokenAuth, getUserProfile);
+router.get('/topics/counts', tokenAuth, getAllTopicCounts);
 
 router.put('/topics/:topicId', tokenAuth, updateTopicTitle);
 router.put('/posts/:postId', tokenAuth, updatePostContent);
 router.put('/user/profile', tokenAuth, updateUserProfile);
+
+router.patch('/messages/:messageId/read', tokenAuth, updateMessageReadStatus);
+router.get('/messages/unread/count', tokenAuth, getUnreadMessageCount);

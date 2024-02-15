@@ -1,10 +1,13 @@
 const resSend = require('../plugins/resSend');
 const topicSchema = require('../schemas/topicSchema');
+const postSchema = require('../schemas/postSchema');
+const userSchema = require('../schemas/userSchema');
 
 module.exports = {
   createTopic: async (req, res) => {
     try {
       const { title } = req.body;
+      const userId = req.user._id;
 
       if (req.user.role !== 'admin') {
         return resSend(
@@ -17,10 +20,16 @@ module.exports = {
 
       const newTopic = new topicSchema({
         title,
-        createdBy: req.user._id,
+        createdBy: userId,
       });
 
       await newTopic.save();
+
+      await userSchema.findByIdAndUpdate(
+        userId,
+        { $push: { topics: newTopic._id } },
+        { new: true, useFindAndModify: false }
+      );
 
       return resSend(res, true, { topic: newTopic }, null);
     } catch (error) {
@@ -77,6 +86,42 @@ module.exports = {
     } catch (error) {
       console.error(error);
       resSend(res, false, null, 'Error updating topic title');
+    }
+  },
+  deleteTopicAndPosts: async (req, res) => {
+    try {
+      const { topicId } = req.params;
+
+      if (req.user.role !== 'admin') {
+        return resSend(res, false, null, 'Only admins can delete topics');
+      }
+
+      const topicDeleted = await topicSchema.findByIdAndDelete(topicId);
+      if (!topicDeleted) {
+        return resSend(res, false, null, 'Topic not found');
+      }
+
+      await postSchema.deleteMany({ topic: topicId });
+      resSend(
+        res,
+        true,
+        null,
+        'Topic and associated posts deleted successfuly'
+      );
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error deleting topic and posts');
+    }
+  },
+  getAllTopicCounts: async (req, res) => {
+    try {
+      const topicCounts = await topicSchema.aggregate([
+        { $group: { _id: '$category', count: { $sum: 1 } } },
+      ]);
+      resSend(res, true, { topicCounts }, 'Topic counts fetched successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error fetching topic counts');
     }
   },
 };
