@@ -9,7 +9,7 @@ module.exports = {
       const { topicId } = req.params;
 
       if (!content) {
-        return resSend(res, false, null, 'Posts cannot be empty');
+        return resSend(res, false, null, 'Content cannot be empty');
       }
 
       const topicExists = await topicSchema.findById(topicId);
@@ -20,7 +20,7 @@ module.exports = {
       const userId = req.user._id;
 
       const newPost = new postSchema({
-        content: content,
+        content,
         topic: topicId,
         createdBy: userId,
       });

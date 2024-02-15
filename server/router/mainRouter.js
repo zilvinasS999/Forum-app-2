@@ -41,6 +41,7 @@ router.post('/login', loginValidate, login);
 router.post('/topics/:topicId/posts', tokenAuth, createPost);
 router.post('/messages/send', tokenAuth, sendMessage);
 router.post('/topics/:mainTopicId/subtopics', tokenAuth, createSubTopic);
+router.post('/topics', tokenAuth, createTopic);
 
 router.get('/topics', getAllTopics);
 router.get('/topics/:topicId', getTopicById);
@@ -51,10 +52,10 @@ router.get('/messages/:userId', getMessagesForUser);
 router.get('/users/:userId', tokenAuth, getUserProfile);
 router.get('/topics/counts', tokenAuth, getAllTopicCounts);
 router.get('/topics/:mainTopicId/subtopics', tokenAuth, getSubTopics);
+router.get('/messages/unread/count', tokenAuth, getUnreadMessageCount);
 
 router.put('/topics/:topicId', tokenAuth, updateTopicTitle);
 router.put('/posts/:postId', tokenAuth, updatePostContent);
 router.put('/user/profile', tokenAuth, updateUserProfile);
 
 router.patch('/messages/:messageId/read', tokenAuth, updateMessageReadStatus);
-router.get('/messages/unread/count', tokenAuth, getUnreadMessageCount);
