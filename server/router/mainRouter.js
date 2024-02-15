@@ -13,6 +13,8 @@ const {
   getTopicById,
   updateTopicTitle,
   getAllTopicCounts,
+  createSubTopic,
+  getSubTopics,
 } = require('../controllers/topicController');
 const {
   createPost,
@@ -38,6 +40,7 @@ router.post('/register', registerValidate, registerUser);
 router.post('/login', loginValidate, login);
 router.post('/topics/:topicId/posts', tokenAuth, createPost);
 router.post('/messages/send', tokenAuth, sendMessage);
+router.post('/topics/:mainTopicId/subtopics', tokenAuth, createSubTopic);
 
 router.get('/topics', getAllTopics);
 router.get('/topics/:topicId', getTopicById);
@@ -47,6 +50,7 @@ router.get('/messages/:userOneId/:userTwoId', getMessagesBetweenUsers);
 router.get('/messages/:userId', getMessagesForUser);
 router.get('/users/:userId', tokenAuth, getUserProfile);
 router.get('/topics/counts', tokenAuth, getAllTopicCounts);
+router.get('/topics/:mainTopicId/subtopics', tokenAuth, getSubTopics);
 
 router.put('/topics/:topicId', tokenAuth, updateTopicTitle);
 router.put('/posts/:postId', tokenAuth, updatePostContent);

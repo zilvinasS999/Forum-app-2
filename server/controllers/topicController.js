@@ -88,31 +88,6 @@ module.exports = {
       resSend(res, false, null, 'Error updating topic title');
     }
   },
-  deleteTopicAndPosts: async (req, res) => {
-    try {
-      const { topicId } = req.params;
-
-      if (req.user.role !== 'admin') {
-        return resSend(res, false, null, 'Only admins can delete topics');
-      }
-
-      const topicDeleted = await topicSchema.findByIdAndDelete(topicId);
-      if (!topicDeleted) {
-        return resSend(res, false, null, 'Topic not found');
-      }
-
-      await postSchema.deleteMany({ topic: topicId });
-      resSend(
-        res,
-        true,
-        null,
-        'Topic and associated posts deleted successfuly'
-      );
-    } catch (error) {
-      console.error(error);
-      resSend(res, false, null, 'Error deleting topic and posts');
-    }
-  },
   getAllTopicCounts: async (req, res) => {
     try {
       const topicCounts = await topicSchema.aggregate([
@@ -122,6 +97,58 @@ module.exports = {
     } catch (error) {
       console.error(error);
       resSend(res, false, null, 'Error fetching topic counts');
+    }
+  },
+  createSubTopic: async (req, res) => {
+    const { title, description } = req.body;
+    const { mainTopicId } = req.params;
+    const userId = req.user._id;
+
+    try {
+      const mainTopicExists = await Topic.findById(mainTopicId);
+      if (!mainTopicExists) {
+        return resSend(res, false, null, 'Main topic not found');
+      }
+
+      const subTopic = new Topic({
+        title,
+        description,
+        mainTopic: mainTopicId,
+        createdBy: userId,
+      });
+      await subTopic.save();
+
+      resSend(res, true, { subTopic }, 'Subtopic created successfully');
+    } catch (error) {
+      res.send(res, false, null, 'Error creating subtopic');
+    }
+  },
+  getSubTopics: async (req, res) => {
+    const { mainTopicId } = req.params;
+
+    try {
+      const subTopics = await Topic.find({ mainTopic: mainTopicId }).populate(
+        'createdBy',
+        'username'
+      );
+
+      if (subTopics.length === 0) {
+        return resSend(
+          res,
+          false,
+          null,
+          'No subtopics found for the given main topic'
+        );
+      }
+      resSend(
+        res,
+        true,
+        { subTopics },
+        'Subtopics retrieved successfully',
+        subTopics
+      );
+    } catch (error) {
+      resSend(res, false, null, 'Error retrieving subtopics');
     }
   },
 };

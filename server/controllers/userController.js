@@ -6,24 +6,28 @@ const userSchema = require('../schemas/userSchema');
 module.exports = {
   registerUser: async (req, res) => {
     try {
-      const { username, passwordOne } = req.body;
+      const { username, passwordOne, passwordTwo, role } = req.body;
 
       const userExists = await userSchema.findOne({ username });
 
       if (userExists)
         return resSend(res, false, null, 'Username is already taken');
 
+      if (passwordOne !== passwordTwo) {
+        return resSend(res, false, null, 'Passwords do not match');
+      }
+
       const password = await bcrypt.hash(passwordOne, 10);
 
       const newUser = new userSchema({
         username,
         password,
-        role: 'regular',
+        role: role === 'admin' ? 'admin' : 'regular',
       });
 
       await newUser.save();
 
-      resSend(res, true, null, 'all good');
+      resSend(res, true, null, { user: newUser }, 'Registration successful');
     } catch (error) {
       console.error(error);
       resSend(res, false, null, 'Error during registration');
@@ -55,6 +59,11 @@ module.exports = {
   getUserProfile: async (req, res) => {
     try {
       const { userId } = req.params;
+      const requesterId = req.user._id;
+
+      if (userId !== requestId) {
+        return resSend(res, false, null, 'Unauthorized access');
+      }
 
       const userProfile = await userSchema
         .findById(userId)

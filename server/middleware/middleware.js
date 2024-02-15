@@ -84,6 +84,11 @@ module.exports = {
       return resSend(res, false, null, 'No token provided');
     }
 
+    if (!process.env.JWT_SECRET) {
+      console.error('JWT_SECRET is not defined');
+      return resSend(res, false, null, 'Authentication error');
+    }
+
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         return resSend(res, false, null, 'Invalid token');
@@ -91,5 +96,15 @@ module.exports = {
       req.user = decoded;
       next();
     });
+  },
+  validateSubTopic: (req, res, next) => {
+    const { title, description } = req.body;
+    if (!title || title.trim() === '') {
+      return resSend(res, false, null, 'Title is required');
+    }
+    if (!description || description.trim() === '') {
+      return resSend(res, false, null, 'Description is required');
+    }
+    next();
   },
 };

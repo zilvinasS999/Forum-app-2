@@ -10,6 +10,11 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch((err) => console.log(err));
 
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL ERROR: JWT_SECRET is not defined');
+  process.exit(1);
+}
+
 app.use(cors());
 
 app.use(express.json());
