@@ -79,19 +79,16 @@ module.exports = {
   },
   tokenAuth: (req, res, next) => {
     const token = req.headers.authorization;
+    console.log('Token received:', token);
 
     if (!token) {
       return resSend(res, false, null, 'No token provided');
     }
 
-    if (!process.env.JWT_SECRET) {
-      console.error('JWT_SECRET is not defined');
-      return resSend(res, false, null, 'Authentication error');
-    }
-
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        return resSend(res, false, null, 'Invalid token');
+        console.error('Token verification error:', err);
+        return resSend(res, false, null, 'bad token');
       }
       req.user = decoded;
       next();

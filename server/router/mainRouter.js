@@ -59,3 +59,5 @@ router.put('/posts/:postId', tokenAuth, updatePostContent);
 router.put('/user/profile', tokenAuth, updateUserProfile);
 
 router.patch('/messages/:messageId/read', tokenAuth, updateMessageReadStatus);
+
+module.exports = router;

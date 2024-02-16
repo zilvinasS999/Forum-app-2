@@ -1,11 +1,14 @@
 const resSend = require('../plugins/resSend');
 const messageSchema = require('../schemas/messageSchema');
+const userSchema = require('../schemas/userSchema');
 
 module.exports = {
   sendMessage: async (req, res) => {
     try {
       const { recipientId, content } = req.body;
       const senderId = req.user._id;
+
+      console.log(recipientId);
 
       const recipientExists = await userSchema.findById(recipientId);
       if (!recipientExists) {

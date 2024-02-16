@@ -104,13 +104,17 @@ module.exports = {
     const { mainTopicId } = req.params;
     const userId = req.user._id;
 
+    if (!title || !description) {
+      return resSend(res, false, null, 'Title and description are required');
+    }
+
     try {
       const mainTopicExists = await Topic.findById(mainTopicId);
       if (!mainTopicExists) {
         return resSend(res, false, null, 'Main topic not found');
       }
 
-      const subTopic = new Topic({
+      const subTopic = new topicSchema({
         title,
         description,
         mainTopic: mainTopicId,

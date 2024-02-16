@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const resSend = require('../plugins/resSend');
 const postSchema = require('../schemas/postSchema');
 const topicSchema = require('../schemas/topicSchema');
@@ -7,6 +8,10 @@ module.exports = {
     try {
       const { content } = req.body;
       const { topicId } = req.params;
+
+      if (!mongoose.Types.ObjectId.isValid(topicId)) {
+        return resSend(res, false, null, 'Invalid topicId');
+      }
 
       if (!content) {
         return resSend(res, false, null, 'Content cannot be empty');

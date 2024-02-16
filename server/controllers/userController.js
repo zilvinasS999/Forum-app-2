@@ -59,7 +59,7 @@ module.exports = {
   getUserProfile: async (req, res) => {
     try {
       const { userId } = req.params;
-      const requesterId = req.user._id;
+      const requestId = req.user._id;
 
       if (userId !== requestId) {
         return resSend(res, false, null, 'Unauthorized access');
