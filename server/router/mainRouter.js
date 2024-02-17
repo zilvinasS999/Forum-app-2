@@ -36,28 +36,28 @@ const {
   tokenAuth,
 } = require('../middleware/middleware');
 
-router.post('/register', registerValidate, registerUser);
-router.post('/login', loginValidate, login);
-router.post('/topics/:topicId/posts', tokenAuth, createPost);
-router.post('/messages/send', tokenAuth, sendMessage);
-router.post('/topics/:mainTopicId/subtopics', tokenAuth, createSubTopic);
-router.post('/topics', tokenAuth, createTopic);
+router.post('/register', registerValidate, registerUser); // DONE
+router.post('/login', loginValidate, login); // DONE
+router.post('/topics/:topicId/posts', tokenAuth, createPost); // DONE
+router.post('/messages/send', tokenAuth, sendMessage); // DONE
+router.post('/topics/:mainTopicId/subtopics', tokenAuth, createSubTopic); // DONE
+router.post('/topics', tokenAuth, createTopic); // DONE
 
-router.get('/topics', getAllTopics);
-router.get('/topics/:topicId', getTopicById);
-router.get('/topics/:topicId/posts', getPostsByTopic);
-router.get('/posts/:postId', getPostById);
-router.get('/messages/:userOneId/:userTwoId', getMessagesBetweenUsers);
-router.get('/messages/:userId', getMessagesForUser);
-router.get('/users/:userId', tokenAuth, getUserProfile);
-router.get('/topics/counts', tokenAuth, getAllTopicCounts);
-router.get('/topics/:mainTopicId/subtopics', tokenAuth, getSubTopics);
-router.get('/messages/unread/count', tokenAuth, getUnreadMessageCount);
+router.get('/messages/unread/count', tokenAuth, getUnreadMessageCount); // DONE
+router.get('/topics/counts', tokenAuth, getAllTopicCounts); // DONE
+router.get('/topics', getAllTopics); // DONE
+router.get('/topics/:topicId', getTopicById); // DONE
+router.get('/topics/:topicId/posts', getPostsByTopic); // DONE
+router.get('/posts/:postId', getPostById); // DONE
+router.get('/messages/:userOneId/:userTwoId', getMessagesBetweenUsers); // DONE
+router.get('/messages/:userId', getMessagesForUser); // DONE
+router.get('/users/:userId', tokenAuth, getUserProfile); // DONE
+router.get('/topics/:mainTopicId/subtopics', tokenAuth, getSubTopics); // DONE
 
-router.put('/topics/:topicId', tokenAuth, updateTopicTitle);
-router.put('/posts/:postId', tokenAuth, updatePostContent);
-router.put('/user/profile', tokenAuth, updateUserProfile);
+router.put('/topics/:topicId', tokenAuth, updateTopicTitle); // DONE
+router.put('/posts/:postId', tokenAuth, updatePostContent); // DONE
+router.put('/user/profile', tokenAuth, updateUserProfile); // DONE
 
-router.patch('/messages/:messageId/read', tokenAuth, updateMessageReadStatus);
+router.put('/messages/:messageId/read', tokenAuth, updateMessageReadStatus); // DONE
 
 module.exports = router;

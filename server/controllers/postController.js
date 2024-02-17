@@ -74,6 +74,10 @@ module.exports = {
       const { newContent } = req.body;
       const userId = req.user._id;
 
+      if (!newContent || newContent.trim() === '') {
+        return resSend(res, false, null, 'New content is required');
+      }
+
       const post = await postSchema.findById(postId);
 
       if (!post) {

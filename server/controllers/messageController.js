@@ -1,6 +1,7 @@
 const resSend = require('../plugins/resSend');
 const messageSchema = require('../schemas/messageSchema');
 const userSchema = require('../schemas/userSchema');
+const mongoose = require('mongoose');
 
 module.exports = {
   sendMessage: async (req, res) => {
@@ -97,11 +98,15 @@ module.exports = {
   },
   getUnreadMessageCount: async (req, res) => {
     try {
-      const userId = req.user._id;
+      console.log('User ID before conversion:', req.user._id);
+      const userId = new mongoose.Types.ObjectId(req.user._id);
+      console.log('User ID after conversion:', userId);
+      console.log('Querying database for unread messages...');
       const unreadCount = await messageSchema.countDocuments({
         recipient: userId,
         read: false,
       });
+      console.log('Unread message count:', unreadCount);
       resSend(
         res,
         true,
@@ -109,7 +114,7 @@ module.exports = {
         'Unread messages count fetched successfully'
       );
     } catch (error) {
-      console.error(error);
+      console.error('Error', error);
       resSend(res, false, null, 'Error fetching unread messages count');
     }
   },

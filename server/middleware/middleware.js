@@ -1,5 +1,6 @@
 const resSend = require('../plugins/resSend');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 module.exports = {
   registerValidate: (req, res, next) => {
@@ -89,6 +90,11 @@ module.exports = {
       if (err) {
         console.error('Token verification error:', err);
         return resSend(res, false, null, 'bad token');
+      }
+      console.log('Decoded token:', decoded);
+      if (!decoded.role) {
+        console.error('Role is not defined in the token');
+        return resSend(res, false, null, 'Role is not defined in the token');
       }
       req.user = decoded;
       next();

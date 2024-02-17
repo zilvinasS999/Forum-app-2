@@ -5,10 +5,12 @@ const userSchema = require('../schemas/userSchema');
 
 module.exports = {
   createTopic: async (req, res) => {
+    console.log(req.body);
     try {
-      const { title } = req.body;
+      const { title, description, category } = req.body;
       const userId = req.user._id;
 
+      console.log('User role from token:', req.user.role);
       if (req.user.role !== 'admin') {
         return resSend(
           res,
@@ -20,6 +22,8 @@ module.exports = {
 
       const newTopic = new topicSchema({
         title,
+        description,
+        category,
         createdBy: userId,
       });
 
@@ -31,7 +35,12 @@ module.exports = {
         { new: true, useFindAndModify: false }
       );
 
-      return resSend(res, true, { topic: newTopic }, null);
+      return resSend(
+        res,
+        true,
+        { topic: newTopic },
+        'Topic created successfully'
+      );
     } catch (error) {
       console.error(error);
       resSend(res, false, null, 'Error creating topic', 500);
@@ -73,6 +82,10 @@ module.exports = {
         );
       }
 
+      if (!newTitle || newTitle.trim() === '') {
+        return resSend(res, false, null, 'New title is required');
+      }
+
       const updatedTopic = await topicSchema.findByIdAndUpdate(
         topicId,
         { title: newTitle },
@@ -100,7 +113,7 @@ module.exports = {
     }
   },
   createSubTopic: async (req, res) => {
-    const { title, description } = req.body;
+    const { title, description, category } = req.body;
     const { mainTopicId } = req.params;
     const userId = req.user._id;
 
@@ -109,7 +122,7 @@ module.exports = {
     }
 
     try {
-      const mainTopicExists = await Topic.findById(mainTopicId);
+      const mainTopicExists = await topicSchema.findById(mainTopicId);
       if (!mainTopicExists) {
         return resSend(res, false, null, 'Main topic not found');
       }
@@ -119,22 +132,23 @@ module.exports = {
         description,
         mainTopic: mainTopicId,
         createdBy: userId,
+        category,
       });
       await subTopic.save();
 
       resSend(res, true, { subTopic }, 'Subtopic created successfully');
     } catch (error) {
-      res.send(res, false, null, 'Error creating subtopic');
+      console.error('Error creating subtopic:', error);
+      resSend(res, false, null, 'Error creating subtopic');
     }
   },
   getSubTopics: async (req, res) => {
     const { mainTopicId } = req.params;
 
     try {
-      const subTopics = await Topic.find({ mainTopic: mainTopicId }).populate(
-        'createdBy',
-        'username'
-      );
+      const subTopics = await topicSchema
+        .find({ mainTopic: mainTopicId })
+        .populate('createdBy', 'username');
 
       if (subTopics.length === 0) {
         return resSend(
@@ -152,6 +166,7 @@ module.exports = {
         subTopics
       );
     } catch (error) {
+      console.error('Error retrieving subtopics:', error);
       resSend(res, false, null, 'Error retrieving subtopics');
     }
   },

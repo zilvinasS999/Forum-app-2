@@ -2,6 +2,7 @@ const resSend = require('../plugins/resSend');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const userSchema = require('../schemas/userSchema');
+const postSchema = require('../schemas/postSchema');
 
 module.exports = {
   registerUser: async (req, res) => {
@@ -45,8 +46,10 @@ module.exports = {
 
       if (!passwordGood) return resSend(res, false, null, 'Bad auth');
 
+      console.log('Signing token for user:', user);
+
       const token = jwt.sign(
-        { _id: user._id, username },
+        { _id: user._id, username: user.username, role: user.role },
         process.env.JWT_SECRET
       );
 
@@ -82,11 +85,15 @@ module.exports = {
   updateUserProfile: async (req, res) => {
     try {
       const userId = req.user._id;
-      const { newImage, username } = req.body;
+      let { newImage } = req.body;
+
+      const imageToUpdate =
+        newImage ||
+        'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
 
       const updatedUser = await userSchema.findByIdAndUpdate(
         userId,
-        { image: newImage, username },
+        { image: imageToUpdate },
         { new: true, runValidators: true }
       );
 
