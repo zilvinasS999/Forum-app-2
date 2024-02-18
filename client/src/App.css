@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .register-form {
   display: flex;
   flex-direction: column;
@@ -22,4 +26,69 @@
 .select-autologin h6 {
   padding: 0;
   margin: 0;
+}
+
+.profile-page-header {
+  width: 100vw;
+}
+
+.navbar {
+  width: 100%;
+  background-color: #8ecae6;
+  height: 4em;
+}
+
+.nav-left {
+  display: flex;
+  width: 40%;
+  justify-content: space-between;
+  margin-left: 1em;
+}
+
+.nav-right {
+  margin-right: 3em;
+}
+
+.profile-page-main {
+  width: calc(95vw - 6em);
+  height: calc(100vh - 4em);
+  margin: 0 auto;
+  padding-top: 3em;
+  display: flex;
+}
+
+.profile-img-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 1em;
+}
+
+.profile-img {
+  height: 40%;
+  border: 1px solid black;
+}
+
+.main-right {
+  border: 1px solid black;
+  margin-left: 3em;
+  width: 100%;
+}
+
+.username {
+  padding-bottom: 0.5em;
+}
+
+.topics-created {
+  height: calc(42% - 4em);
+  border: 1px solid black;
+  width: 90%;
+  margin: 2em 0;
+}
+
+.posts-created {
+  height: calc(42% - 4em);
+  border: 1px solid black;
+  width: 90%;
+  margin: 2em 0;
 }
