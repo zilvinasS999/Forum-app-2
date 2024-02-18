@@ -3,6 +3,7 @@ import NavbarComp from '../components/NavbarComp';
 import ImgComp from '../components/ImgComp';
 import TopicsComp from '../components/TopicsComp';
 import PostsComp from '../components/PostsComp';
+import ForumPage from './ForumPage';
 
 function OwnProfilePage() {
   return (

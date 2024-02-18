@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import OwnProfilePage from './pages/OwnProfilePage';
+import ForumPage from './pages/ForumPage';
+import SubTopicPage from './pages/SubTopicPage';
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/profile' element={<OwnProfilePage />} />
+          <Route path='/forum' element={<ForumPage />} />
+          <Route path='/forum/cars' element={<SubTopicPage />} />
         </Routes>
       </BrowserRouter>
     </div>
