@@ -13,10 +13,11 @@ function App() {
     <div className='App'>
       <BrowserRouter>
         <Routes>
+          <Route path='/' element={<ForumPage />} />
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/profile' element={<OwnProfilePage />} />
-          <Route path='/forum' element={<ForumPage />} />
+          <Route path='profile/:userId' element={<OwnProfilePage />} />
           <Route path='/forum/cars' element={<SubTopicPage />} />
         </Routes>
       </BrowserRouter>

@@ -45,12 +45,16 @@ router.post('/topics', tokenAuth, createTopic); // DONE
 
 router.get('/messages/unread/count', tokenAuth, getUnreadMessageCount); // DONE
 router.get('/topics/counts', tokenAuth, getAllTopicCounts); // DONE
-router.get('/topics', getAllTopics); // DONE
-router.get('/topics/:topicId', getTopicById); // DONE
-router.get('/topics/:topicId/posts', getPostsByTopic); // DONE
-router.get('/posts/:postId', getPostById); // DONE
-router.get('/messages/:userOneId/:userTwoId', getMessagesBetweenUsers); // DONE
-router.get('/messages/:userId', getMessagesForUser); // DONE
+router.get('/topics', tokenAuth, getAllTopics);
+router.get('/topics/:topicId', tokenAuth, getTopicById);
+router.get('/topics/:topicId/posts', tokenAuth, getPostsByTopic);
+router.get('/posts/:postId', tokenAuth, getPostById); // DONE
+router.get(
+  '/messages/:userOneId/:userTwoId',
+  tokenAuth,
+  getMessagesBetweenUsers
+); // DONE
+router.get('/messages/:userId', tokenAuth, getMessagesForUser); // DONE
 router.get('/users/:userId', tokenAuth, getUserProfile); // DONE
 router.get('/topics/:mainTopicId/subtopics', tokenAuth, getSubTopics); // DONE
 

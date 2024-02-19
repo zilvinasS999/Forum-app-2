@@ -1,10 +1,10 @@
 import React from 'react';
 import { useRef, useEffect } from 'react';
-import useStore from '../store/myStore';
+import { useErrStore } from '../store/myStore';
 
 function RegisterPage() {
   const { error, success, setError, setSuccess, clearError, clearSuccess } =
-    useStore();
+    useErrStore();
   const usernameRef = useRef();
   const passwordOneRef = useRef();
   const passwordTwoRef = useRef();
@@ -54,11 +54,6 @@ function RegisterPage() {
     }
   };
 
-  // useEffect(() => {
-  //   if (error) {
-  //     console.log(error);
-  //   }
-  // }, [error]);
   return (
     <div>
       <form className='register-form' onSubmit={handleFormSubmit}>

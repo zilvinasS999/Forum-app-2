@@ -20,9 +20,12 @@ module.exports = {
 
       const password = await bcrypt.hash(passwordOne, 10);
 
+      const defaultImage =
+        'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png';
       const newUser = new userSchema({
         username,
         password,
+        image: defaultImage,
         role: role === 'admin' ? 'admin' : 'regular',
       });
 
@@ -53,7 +56,9 @@ module.exports = {
         process.env.JWT_SECRET
       );
 
-      return resSend(res, true, { token, username }, 'all good');
+      const responseBody = { token, username };
+      console.log('Response being sent:', responseBody);
+      return resSend(res, true, responseBody, 'all good');
     } catch (error) {
       console.error(error);
       resSend(res, false, null, 'Error during login');

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '../store/myStore';
 
 function NavbarComp() {
   return (
@@ -11,7 +12,11 @@ function NavbarComp() {
           <Link className='nav-link'>Messages</Link>
         </nav>
         <div className='nav-right'>
-          <Link className='nav-link'>Log out</Link>
+          <Link className='nav-link'>
+            <button onClick={() => useAuthStore.getState().logout()}>
+              Logout
+            </button>
+          </Link>
         </div>
       </nav>
     </div>
