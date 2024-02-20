@@ -1,46 +1,55 @@
 import React from 'react';
-import { useProfileStore } from '../store/myStore';
-import { useState, useEffect } from 'react';
+import NavbarComp from '../components/NavbarComp';
+import MainTopicComp from '../components/MainTopicComp';
+import { useAuthStore, useForumStore } from '../store/myStore';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
-function ImgComp({ userId }) {
-  const { userProfile, updateUserImage } = useProfileStore();
-  const [newImageUrl, setNewImageUrl] = useState('');
+function ForumPage() {
+  const { isLoggedIn, username, role } = useAuthStore();
+  const { topics, fetchTopics } = useForumStore();
 
-  // useEffect(() => {
-  //   if (userProfile && userProfile.image) {
-  //     setNewImageUrl(userProfile.image);
-  //   }
-  // }, [userProfile]);
-
-  const handleImageUpdate = () => {
-    const token = localStorage.getItem('token');
-
-    if (token && newImageUrl && newImageUrl !== userProfile.image) {
-      updateUserImage(newImageUrl, token);
+  const navigate = useNavigate();
+  console.log('Topics state:', topics);
+  console.log('Topics Topics:', topics.topics);
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else {
+      fetchTopics();
     }
-  };
+  }, [isLoggedIn, navigate, fetchTopics]);
+
+  console.log('Logged in as:', username);
+  // if (!Array.isArray(topics)) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
-    <div className='profile-img-card col-4'>
-      <img
-        src={
-          userProfile.image ||
-          'https://w7.pngwing.com/pngs/177/551/png-transparent-user-interface-design-computer-icons-default-stephen-salazar-graphy-user-interface-design-computer-wallpaper-sphere-thumbnail.png'
-        }
-        alt='Profile'
-        className='profile-img'
-      />
-      <input
-        type='text'
-        className='img-url'
-        value={newImageUrl}
-        onChange={(e) => setNewImageUrl(e.target.value)}
-      />
-      <button type='button' onClick={handleImageUpdate}>
-        Update Image
-      </button>
+    <div>
+      <header>
+        <NavbarComp />
+      </header>
+      {isLoggedIn && <h1>Welcome, {username}!</h1>}
+      <main className='forum-page-main'>
+        <div className='main-topic-container'>
+          {topics.topics &&
+            topics.topics.map((topic) => (
+              <MainTopicComp
+                key={topic._id}
+                title={topic.title}
+                count={topic.count || 0}
+              />
+            ))}
+        </div>
+        {role === 'admin' && (
+          <div className='create-topic-btn-container'>
+            <button type='button'>Create Topic</button>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
 
-export default ImgComp;
+export default ForumPage;

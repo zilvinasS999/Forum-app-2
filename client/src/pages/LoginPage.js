@@ -53,10 +53,11 @@ function LoginPage() {
 
       setToken(data.data.token);
       setUsername(data.data.username);
-      setUserInfo(data.data.role);
-      localStorage.setItem('username', data.data.username);
-      console.log('Username set to:', data.data.username);
-      setIsLoggedIn(true);
+      setUserInfo({
+        username: data.data.username,
+        token: data.data.token,
+        role: data.data.role,
+      });
       navigate('/');
     } catch (error) {
       console.error('Login failed', error);

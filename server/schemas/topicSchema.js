@@ -8,15 +8,17 @@ const topicSchema = new Schema({
   },
   description: {
     type: String,
-    required: true,
+    required: false,
   },
   mainTopic: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Topic',
+    default: null,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
   },
   category: {
     type: String,

@@ -142,4 +142,29 @@ export const useForumStore = create((set) => ({
       console.error('Error fetching topics:', error);
     }
   },
+  createTopic: async (topicData, token) => {
+    try {
+      console.log('Sending request to create topic with data:', topicData);
+      const response = await fetch('http://localhost:2400/topics', {
+        method: 'POST', // or whatever your method is
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify(topicData),
+      });
+      const data = await response.json();
+      console.log('Response received:', data);
+
+      if (response.ok && data.success) {
+        return { success: true };
+      } else {
+        console.error('Failed to create topic:', data.message);
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.error('Error creating topic:', error);
+      return { success: false, message: error.message };
+    }
+  },
 }));

@@ -47,7 +47,8 @@ module.exports = {
 
       const passwordGood = await bcrypt.compare(password, user.password);
 
-      if (!passwordGood) return resSend(res, false, null, 'Bad auth');
+      if (!passwordGood)
+        return resSend(res, false, null, 'Wrong email or password');
 
       console.log('Signing token for user:', user);
 
@@ -56,7 +57,7 @@ module.exports = {
         process.env.JWT_SECRET
       );
 
-      const responseBody = { token, username };
+      const responseBody = { token, username, role: user.role };
       console.log('Response being sent:', responseBody);
       return resSend(res, true, responseBody, 'all good');
     } catch (error) {

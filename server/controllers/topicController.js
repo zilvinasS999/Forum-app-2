@@ -7,7 +7,14 @@ module.exports = {
   createTopic: async (req, res) => {
     console.log(req.body);
     try {
-      const { title, description, category } = req.body;
+      const defaultDescription = 'Default Description';
+      const defaultCategory = 'General';
+      const {
+        title,
+        description = defaultDescription,
+        category = defaultCategory,
+      } = req.body;
+      console.log('Decoded token user info:', req.user);
       const userId = req.user._id;
 
       console.log('User role from token:', req.user.role);
@@ -27,7 +34,11 @@ module.exports = {
         createdBy: userId,
       });
 
+      console.log('Creating new topic:', newTopic);
+
       await newTopic.save();
+
+      console.log('New topic created successfully:', newTopic);
 
       await userSchema.findByIdAndUpdate(
         userId,
@@ -48,7 +59,7 @@ module.exports = {
   },
   getAllTopics: async (req, res) => {
     try {
-      const topics = await topicSchema.find({});
+      const topics = await topicSchema.find({ mainTopic: null });
       resSend(res, true, { topics }, 'Fetched all topics successfully');
     } catch (error) {
       console.error(error);
@@ -130,9 +141,10 @@ module.exports = {
       const subTopic = new topicSchema({
         title,
         description,
-        mainTopic: mainTopicId,
-        createdBy: userId,
         category,
+        mainTopic: mainTopicId,
+        createdBy: req.user._id,
+        mainTopic: mainTopicId,
       });
       await subTopic.save();
 

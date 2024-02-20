@@ -3,28 +3,68 @@ import NavbarComp from '../components/NavbarComp';
 import MainTopicComp from '../components/MainTopicComp';
 import { useAuthStore, useForumStore } from '../store/myStore';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function ForumPage() {
-  const { isLoggedIn, username, role } = useAuthStore();
-  const { topics, fetchTopics } = useForumStore();
+  const { token, isLoggedIn, role, username } = useAuthStore((state) => ({
+    token: state.token,
+    isLoggedIn: state.isLoggedIn,
+    role: state.role,
+    username: state.username,
+  }));
+  const { topics, fetchTopics, createTopic } = useForumStore((state) => ({
+    topics: state.topics,
+    fetchTopics: state.fetchTopics,
+    createTopic: state.createTopic,
+  }));
 
   const navigate = useNavigate();
-  console.log('Topics state:', topics);
-  console.log('Topics Topics:', topics.topics);
+  const [topicTitle, setTopicTitle] = useState('');
+
   useEffect(() => {
     if (!isLoggedIn) {
       navigate('/login');
     } else {
-      fetchTopics();
+      fetchTopics().then(() => {
+        console.log('Topics state:', topics);
+        if (topics.topics) {
+          console.log('Topics Topics:', topics.topics);
+        }
+      });
     }
   }, [isLoggedIn, navigate, fetchTopics]);
 
-  console.log('Logged in as:', username);
-  // if (!Array.isArray(topics)) {
-  //   return <div>Loading...</div>;
-  // }
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     navigate('/login');
+  //   } else {
+  //     fetchTopics();
+  //   }
+  // }, [isLoggedIn, navigate, fetchTopics]);
 
+  const handleCreateTopicClick = async () => {
+    if (role !== 'admin') {
+      alert('Only admins can create topics.');
+      return;
+    }
+
+    if (!topicTitle.trim()) {
+      alert('Please enter a title for the topic.');
+      return;
+    }
+    try {
+      const result = await createTopic({ title: topicTitle }, token);
+      if (result.success) {
+        setTopicTitle('');
+        await fetchTopics();
+      } else {
+        alert('Failed to create topic. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error creating topic:', error);
+      alert('An error occurred while creating the topic. Please try again.');
+    }
+  };
   return (
     <div>
       <header>
@@ -44,12 +84,19 @@ function ForumPage() {
         </div>
         {role === 'admin' && (
           <div className='create-topic-btn-container'>
-            <button type='button'>Create Topic</button>
+            <input
+              type='text'
+              placeholder='Enter topic title'
+              value={topicTitle}
+              onChange={(e) => setTopicTitle(e.target.value)}
+            />
+            <button type='button' onClick={handleCreateTopicClick}>
+              Create Topic
+            </button>
           </div>
         )}
       </main>
     </div>
   );
 }
-
 export default ForumPage;
