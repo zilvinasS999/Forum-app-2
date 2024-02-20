@@ -142,11 +142,33 @@ export const useForumStore = create((set) => ({
       console.error('Error fetching topics:', error);
     }
   },
+  subtopics: [],
+  fetchSubTopics: async (mainTopicId, token) => {
+    try {
+      const response = await fetch(
+        `http://localhost:2400/topics/${mainTopicId}/subtopics`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        }
+      );
+      const data = await response.json();
+      if (response.ok && data.success) {
+        set({ subtopics: data.subTopics });
+      } else {
+        console.error('Failed to fetch subtopics:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching subtopics:', error);
+    }
+  },
   createTopic: async (topicData, token) => {
     try {
       console.log('Sending request to create topic with data:', topicData);
       const response = await fetch('http://localhost:2400/topics', {
-        method: 'POST', // or whatever your method is
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: token,
@@ -164,6 +186,36 @@ export const useForumStore = create((set) => ({
       }
     } catch (error) {
       console.error('Error creating topic:', error);
+      return { success: false, message: error.message };
+    }
+  },
+  createSubTopic: async (subtopicData, mainTopicId, token) => {
+    try {
+      const response = await fetch(
+        `http://localhost:2400/topics/${mainTopicId}/subtopics`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+          body: JSON.stringify(subtopicData),
+        }
+      );
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        set((state) => ({
+          // Assuming subtopics are related to a specific topic and not all topics
+          subtopics: [...state.subtopics, data.newSubtopic],
+        }));
+        return { success: true, newSubtopic: data.newSubtopic };
+      } else {
+        console.error('Failed to create subtopic:', data.message);
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.error('Error creating subtopic:', error);
       return { success: false, message: error.message };
     }
   },

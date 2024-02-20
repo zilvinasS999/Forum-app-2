@@ -26,7 +26,6 @@ function ForumPage() {
       navigate('/login');
     } else {
       fetchTopics().then(() => {
-        console.log('Topics state:', topics);
         if (topics.topics) {
           console.log('Topics Topics:', topics.topics);
         }

@@ -124,11 +124,11 @@ module.exports = {
     }
   },
   createSubTopic: async (req, res) => {
-    const { title, description, category } = req.body;
+    const { title, description = '', category } = req.body;
     const { mainTopicId } = req.params;
     const userId = req.user._id;
 
-    if (!title || !description) {
+    if (!title) {
       return resSend(res, false, null, 'Title and description are required');
     }
 
