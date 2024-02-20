@@ -7,8 +7,16 @@ import LoginPage from './pages/LoginPage';
 import OwnProfilePage from './pages/OwnProfilePage';
 import ForumPage from './pages/ForumPage';
 import SubTopicPage from './pages/SubTopicPage';
+import { useAuthStore, useErrStore, useProfileStore } from './store/myStore';
+import { useEffect } from 'react';
 
 function App() {
+  // const { attemptAutoLogin } = useAuthStore();
+
+  // useEffect(() => {
+  //   attemptAutoLogin();
+  // }, []);
+
   return (
     <div className='App'>
       <BrowserRouter>

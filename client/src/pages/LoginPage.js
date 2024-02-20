@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRef } from 'react';
-import { useAuthStore, useErrStore } from '../store/myStore';
+import { useAuthStore, useErrStore, useProfileStore } from '../store/myStore';
 import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
@@ -8,9 +8,9 @@ function LoginPage() {
     setToken,
     setIsLoggedIn,
     setAutoLoginEnabled,
-    attemptAutoLogin,
     setUsername,
     isLoggedIn,
+    setUserInfo,
   } = useAuthStore();
   const { error, success, setError, setSuccess, clearError, clearSuccess } =
     useErrStore();
@@ -53,7 +53,9 @@ function LoginPage() {
 
       setToken(data.data.token);
       setUsername(data.data.username);
+      setUserInfo(data.data.role);
       localStorage.setItem('username', data.data.username);
+      console.log('Username set to:', data.data.username);
       setIsLoggedIn(true);
       navigate('/');
     } catch (error) {

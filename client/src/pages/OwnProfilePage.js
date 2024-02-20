@@ -27,7 +27,7 @@ function OwnProfilePage() {
         <NavbarComp />
       </header>
       <main className='profile-page-main'>
-        <ImgComp image={userProfile.image} />
+        <ImgComp image={userProfile.image} userId={userId} />
         <div className='main-right'>
           <h2 className='username'>{userProfile.username}</h2>
           <h4>Topics created in forum</h4>

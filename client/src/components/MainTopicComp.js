@@ -1,10 +1,10 @@
 import React from 'react';
 
-function MainTopicComp() {
+function MainTopicComp({ title, count }) {
   return (
     <div className='main-topic'>
-      <h2>Animals</h2>
-      <h5>Topics amount: 23</h5>
+      <h2>{title}</h2>
+      <h5>Topics amount: {count}</h5>
     </div>
   );
 }

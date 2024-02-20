@@ -80,6 +80,7 @@ module.exports = {
   },
   tokenAuth: (req, res, next) => {
     const token = req.headers.authorization;
+    console.log('Authorization header:', req.headers.authorization);
     console.log('Token received:', token);
 
     if (!token) {

@@ -1,8 +1,25 @@
 import React from 'react';
 import { useProfileStore } from '../store/myStore';
+import { useState, useEffect } from 'react';
 
-function ImgComp() {
-  const { userProfile, fetchUserProfile } = useProfileStore();
+function ImgComp({ userId }) {
+  const { userProfile, updateUserImage } = useProfileStore();
+  const [newImageUrl, setNewImageUrl] = useState('');
+
+  // useEffect(() => {
+  //   if (userProfile && userProfile.image) {
+  //     setNewImageUrl(userProfile.image);
+  //   }
+  // }, [userProfile]);
+
+  const handleImageUpdate = () => {
+    const token = localStorage.getItem('token');
+
+    if (token && newImageUrl && newImageUrl !== userProfile.image) {
+      updateUserImage(newImageUrl, token);
+    }
+  };
+
   return (
     <div className='profile-img-card col-4'>
       <img
@@ -13,8 +30,15 @@ function ImgComp() {
         alt='Profile'
         className='profile-img'
       />
-      <input type='text' className='img-url' />
-      <button type='submit'>Update Image</button>
+      <input
+        type='text'
+        className='img-url'
+        value={newImageUrl}
+        onChange={(e) => setNewImageUrl(e.target.value)}
+      />
+      <button type='button' onClick={handleImageUpdate}>
+        Update Image
+      </button>
     </div>
   );
 }
