@@ -33,8 +33,7 @@ function ForumPage() {
       }
       fetchTopics();
     }
-  }, [isLoggedIn, navigate, fetchTopics, setRole]); // Add setRole to the dependency array
-
+  }, [isLoggedIn, navigate, fetchTopics, setRole]);
   const handleCreateTopicClick = async () => {
     if (role !== 'admin') {
       alert('Only admins can create topics.');

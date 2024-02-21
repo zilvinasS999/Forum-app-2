@@ -42,21 +42,7 @@ export const useAuthStore = create((set) => ({
     localStorage.setItem('role', role);
     set({ token, username, role, isLoggedIn: true });
   },
-  // attemptAutoLogin: () => {
-  //   console.log('Attempting to auto-login');
-  //   const autoLoginEnabled = localStorage.getItem('autologin') === 'true';
-  //   const token = localStorage.getItem('token');
-  //   const username = localStorage.getItem('username');
-  //   console.log('Auto-login enabled:', autoLoginEnabled);
-  //   console.log('Token found:', token);
 
-  //   if (token && username) {
-  //     set({ isLoggedIn: true, token, username });
-  //     console.log('Auto-login successful.');
-  //   } else {
-  //     console.log('No token found, auto-login failed.');
-  //   }
-  // },
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');

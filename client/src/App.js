@@ -17,7 +17,7 @@ function App() {
           <Route path='/' element={<ForumPage />} />
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/login' element={<LoginPage />} />
-          <Route path='/profile' element={<OwnProfilePage />} />
+          {/* <Route path='/profile' element={<OwnProfilePage />} /> */}
           <Route path='profile/:userId' element={<OwnProfilePage />} />
           <Route path='/:mainTopicId' element={<SubTopicPage />} />
           <Route

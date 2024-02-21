@@ -1,7 +1,7 @@
 import React from 'react';
 import NavbarComp from '../components/NavbarComp';
 import SubTopicComp from '../components/SubTopicComp';
-
+import { useEffect } from 'react';
 import { useAuthStore, useForumStore } from '../store/myStore';
 import { useParams } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ function SubTopicPage() {
     fetchMainTopicTitle,
   } = useForumStore();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (mainTopicId && token) {
       fetchSubTopics(mainTopicId, token);
       fetchMainTopicTitle(mainTopicId, token);

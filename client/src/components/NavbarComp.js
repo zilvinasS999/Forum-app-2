@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/myStore';
 
 function NavbarComp() {
+  const { logout, userId } = useAuthStore();
   return (
     <div>
       <nav className='navbar'>
         <nav className='nav-left'>
-          <Link className='nav-link'>My Profile</Link>
+          <Link to={`/profile/${userId}`} className='nav-link'>
+            My Profile
+          </Link>
           <Link className='nav-link'>Forum</Link>
           <Link className='nav-link'>Messages</Link>
         </nav>

@@ -6,18 +6,21 @@ const ImgComp = ({ image, userId }) => {
   const { updateUserImage } = useProfileStore();
 
   const handleImageUpdate = async () => {
-    const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
+    const token = localStorage.getItem('token');
     if (newImageUrl.trim() && token) {
       await updateUserImage(newImageUrl, token);
-      setNewImageUrl(''); // Clear input field after update
-    } else {
+      setNewImageUrl('');
       alert('Please enter a valid image URL.');
     }
   };
 
   return (
-    <div>
-      <img src={image || 'default-image-url.png'} alt='Profile' />
+    <div className='profile-card'>
+      <img
+        src={image || 'default-image-url.png'}
+        alt='Profile'
+        className='profile-img'
+      />
       <input
         type='text'
         value={newImageUrl}

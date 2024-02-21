@@ -10,11 +10,11 @@ import {
 } from '../store/myStore';
 
 function DiscussionPage() {
-  const { discussionId, mainTopicId } = useParams(); // Get mainTopicId from the URL
+  const { discussionId, mainTopicId } = useParams();
   const { token } = useAuthStore();
   const { fetchMessages, messages, sendMessage } = useMessageStore();
-  const { fetchUserProfile, userProfile } = useProfileStore(); // Get fetchUserProfile and userProfile from useProfileStore
-  const { fetchSubTopic, subtopic } = useForumStore(); // Get fetchSubTopic and subtopic from useForumStore
+  const { fetchUserProfile, userProfile } = useProfileStore();
+  const { fetchSubTopic, subtopic } = useForumStore();
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {

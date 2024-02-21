@@ -6,7 +6,7 @@ const app = express();
 const mainRouter = require('./router/mainRouter');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-console.log(process.env.JWT_SECRET);
+// console.log(process.env.JWT_SECRET);
 mongoose
   .connect(
     'mongodb+srv://zilvinasSt:forum@forum1.4tpwavx.mongodb.net/?retryWrites=true&w=majority'
@@ -18,10 +18,10 @@ mongoose
     console.log(err);
   });
 
-if (!process.env.JWT_SECRET) {
-  console.error('FATAL ERROR: JWT_SECRET is not defined');
-  process.exit(1);
-}
+// if (!process.env.JWT_SECRET) {
+//   console.error('FATAL ERROR: JWT_SECRET is not defined');
+//   process.exit(1);
+// }
 app.use(express.json());
 app.use(cors());
 
@@ -31,6 +31,6 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-console.log(process.env.DB_CONNECTION_STRING);
+// console.log(process.env.DB_CONNECTION_STRING);
 
 const userId = 'some-test-user-id';

@@ -61,9 +61,11 @@ function LoginPage() {
         <input type='checkbox' onChange={handleAutoLoginChange} />
         <h6>Auto Login</h6>
       </div>
-      <button type='submit' onClick={login}>
-        Login
-      </button>
+      <div className='auth-btn-container'>
+        <button className='auth-button' type='submit' onClick={login}>
+          Login
+        </button>
+      </div>
       {error && (
         <p className='error' style={{ color: 'red' }}>
           {error}

@@ -33,7 +33,7 @@ function OwnProfilePage() {
           <h4>Topics created in forum</h4>
           <TopicsComp topics={userProfile.topics} />
           <h4>Posts written in forum</h4>
-          <PostsComp posts={userProfile.posts} />
+          {/* <PostsComp posts={userProfile.posts} /> */}
         </div>
       </main>
     </div>

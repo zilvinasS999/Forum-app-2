@@ -11,7 +11,9 @@ function RegistrationComp() {
         <option value='admin'>Admin</option>
         <option value='user'>User</option>
       </select>
-      <button type='submit'>Register</button>
+      <button type='submit' className='auth-button'>
+        Register
+      </button>
     </div>
   );
 }

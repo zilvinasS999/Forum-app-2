@@ -162,13 +162,13 @@ module.exports = {
   getTopicById: async (req, res) => {
     try {
       const { topicId } = req.params;
-      console.log('Fetching topic with ID:', topicId); // Log the ID being requested
+      console.log('Fetching topic with ID:', topicId);
       const topic = await topicSchema.findById(topicId);
       if (!topic) {
-        console.log('Topic not found for ID:', topicId); // Log if the topic isn't found
+        console.log('Topic not found for ID:', topicId);
         return resSend(res, false, null, 'Topic not found');
       }
-      console.log('Sending topic data:', topic); // Log the data being sent
+      console.log('Sending topic data:', topic);
       resSend(res, true, { topic }, 'Fetched topic successfully');
     } catch (error) {
       console.error('Error fetching topic:', error);

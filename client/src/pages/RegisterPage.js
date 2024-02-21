@@ -80,7 +80,11 @@ function RegisterPage() {
           <option value='admin'>Admin</option>
           <option value='user'>User</option>
         </select>
-        <button type='submit'>Register</button>
+        <div className='auth-btn-container'>
+          <button type='submit' className='auth-button'>
+            Register
+          </button>
+        </div>
         {error && (
           <p className='error' style={{ color: 'red' }}>
             {error}
