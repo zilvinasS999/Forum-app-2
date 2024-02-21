@@ -79,21 +79,21 @@ export const useProfileStore = create((set) => ({
   fetchUserProfile: async (userId, token) => {
     try {
       const response = await fetch(`http://localhost:2400/users/${userId}`, {
-        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: token,
+          'Content-Type': 'application/json',
         },
       });
       const data = await response.json();
-      console.log('Fetched user profile:', data);
-      if (data.success) {
+      if (response.ok && data.success && data.data) {
         set({ userProfile: data.data.userProfile });
       } else {
         console.error('Failed to fetch user profile:', data.message);
+        set({ userProfile: null });
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      set({ userProfile: null });
     }
   },
   updateUserImage: async (newImageUrl, token) => {
@@ -127,16 +127,7 @@ export const useProfileStore = create((set) => ({
 export const useForumStore = create((set) => ({
   topics: [],
   mainTopicTitle: '',
-  subtopicTitle: '',
-  subtopicDescription: '',
   setMainTopicTitle: (title) => set({ mainTopicTitle: title }),
-  setSubtopicTitle: (title) => set(() => ({ subtopicTitle: title })),
-  setSubtopicDescription: (description) =>
-    set(() => ({ subtopicDescription: description })),
-  addSubtopic: (newSubtopic) =>
-    set((state) => ({
-      subtopics: [...state.subtopics, newSubtopic],
-    })),
   fetchMainTopicTitle: async (mainTopicId, token) => {
     try {
       const response = await fetch(
@@ -185,7 +176,45 @@ export const useForumStore = create((set) => ({
       console.error('Error fetching topics:', error);
     }
   },
+  subtopic: null,
   subtopics: [],
+  subtopicTitle: '',
+  subtopicDescription: '',
+  setSubtopicTitle: (title) => set(() => ({ subtopicTitle: title })),
+  setSubtopicDescription: (description) =>
+    set(() => ({ subtopicDescription: description })),
+  addSubtopic: (newSubtopic) =>
+    set((state) => ({
+      subtopics: [...state.subtopics, newSubtopic],
+    })),
+  fetchSubTopic: async (subTopicId, token) => {
+    try {
+      const response = await fetch(
+        `http://localhost:2400/subtopics/${subTopicId}`,
+        {
+          headers: {
+            Authorization: token,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+
+      const data = await response.json();
+      if (data.success && data.data) {
+        set({ subtopic: data.data.subTopic });
+      } else {
+        console.error('Failed to fetch subtopic:', data.message);
+        set({ subtopic: null });
+      }
+    } catch (error) {
+      console.error('Error fetching subtopic:', error);
+      set({ subtopic: null });
+    }
+  },
   fetchSubTopics: async (mainTopicId, token) => {
     try {
       const response = await fetch(
@@ -282,6 +311,51 @@ export const useForumStore = create((set) => ({
     } catch (error) {
       console.error('Error creating subtopic:', error);
       return { success: false, message: error.message };
+    }
+  },
+}));
+
+export const useMessageStore = create((set) => ({
+  messages: [],
+  fetchMessages: async (discussionId, token) => {
+    try {
+      const response = await fetch(
+        `http://localhost:2400/topics/${discussionId}/posts`,
+        {
+          headers: { Authorization: token },
+        }
+      );
+      const data = await response.json();
+      console.log('Fetched messages:', data);
+      if (data.success) {
+        set({ messages: data.posts });
+      } else {
+        console.error('Failed to fetch messages:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  },
+  sendMessage: async (recipientId, content, token) => {
+    try {
+      const response = await fetch(`http://localhost:2400/messages/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify({ recipientId, content }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        set((state) => ({
+          messages: [...state.messages, data.message],
+        }));
+      } else {
+        console.error('Failed to send message:', data.message);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
     }
   },
 }));

@@ -16,6 +16,14 @@ const postSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    imageUrl: {
+      type: String,
+      default: '',
+    },
+    youtubeUrl: {
+      type: String,
+      default: '',
+    },
   },
   { timestamps: true }
 );

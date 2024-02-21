@@ -66,55 +66,27 @@ module.exports = {
       resSend(res, false, null, 'Error fetching topics');
     }
   },
-  getTopicById: async (req, res) => {
+  getSubTopicById: async (req, res) => {
+    const { subTopicId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(subTopicId)) {
+      return resSend(res, false, null, 'Invalid subtopic ID');
+    }
+
     try {
-      const { topicId } = req.params;
-      console.log('Fetching topic with ID:', topicId); // Log the ID being requested
-      const topic = await topicSchema.findById(topicId);
-      if (!topic) {
-        console.log('Topic not found for ID:', topicId); // Log if the topic isn't found
-        return resSend(res, false, null, 'Topic not found');
+      const subTopic = await topicSchema.findById(subTopicId);
+
+      if (!subTopic) {
+        return resSend(res, false, null, 'Subtopic not found');
       }
-      console.log('Sending topic data:', topic); // Log the data being sent
-      resSend(res, true, { topic }, 'Fetched topic successfully');
+
+      resSend(res, true, { subTopic }, 'Subtopic fetched successfully');
     } catch (error) {
-      console.error('Error fetching topic:', error);
-      resSend(res, false, null, 'Error fetching topic');
+      console.error('Error fetching subtopic:', error);
+      resSend(res, false, null, 'Error fetching subtopic');
     }
   },
-  updateTopicTitle: async (req, res) => {
-    try {
-      const { topicId } = req.params;
-      const { newTitle } = req.body;
 
-      if (req.user.role !== 'admin') {
-        return resSend(
-          res,
-          false,
-          null,
-          'Only admins can update the topic title'
-        );
-      }
-
-      if (!newTitle || newTitle.trim() === '') {
-        return resSend(res, false, null, 'New title is required');
-      }
-
-      const updatedTopic = await topicSchema.findByIdAndUpdate(
-        topicId,
-        { title: newTitle },
-        { new: true }
-      );
-
-      if (!updatedTopic) {
-        return resSend(res, false, null, 'Topic was not found');
-      }
-      resSend(res, true, { updatedTopic }, 'Topic title updated successfully');
-    } catch (error) {
-      console.error(error);
-      resSend(res, false, null, 'Error updating topic title');
-    }
-  },
   getAllTopicCounts: async (req, res) => {
     try {
       const topicCounts = await topicSchema.aggregate([
@@ -127,7 +99,7 @@ module.exports = {
     }
   },
   createSubTopic: async (req, res) => {
-    const { title, description } = req.body; // Get the description from the request body
+    const { title, description } = req.body;
     const { mainTopicId } = req.params;
     const userId = req.user._id;
 
@@ -185,6 +157,71 @@ module.exports = {
     } catch (error) {
       console.error('Error retrieving subtopics:', error);
       resSend(res, false, null, 'Error retrieving subtopics');
+    }
+  },
+  getTopicById: async (req, res) => {
+    try {
+      const { topicId } = req.params;
+      console.log('Fetching topic with ID:', topicId); // Log the ID being requested
+      const topic = await topicSchema.findById(topicId);
+      if (!topic) {
+        console.log('Topic not found for ID:', topicId); // Log if the topic isn't found
+        return resSend(res, false, null, 'Topic not found');
+      }
+      console.log('Sending topic data:', topic); // Log the data being sent
+      resSend(res, true, { topic }, 'Fetched topic successfully');
+    } catch (error) {
+      console.error('Error fetching topic:', error);
+      resSend(res, false, null, 'Error fetching topic');
+    }
+  },
+  updateTopicTitle: async (req, res) => {
+    try {
+      const { topicId } = req.params;
+      const { newTitle } = req.body;
+
+      if (req.user.role !== 'admin') {
+        return resSend(
+          res,
+          false,
+          null,
+          'Only admins can update the topic title'
+        );
+      }
+
+      if (!newTitle || newTitle.trim() === '') {
+        return resSend(res, false, null, 'New title is required');
+      }
+
+      const updatedTopic = await topicSchema.findByIdAndUpdate(
+        topicId,
+        { title: newTitle },
+        { new: true }
+      );
+
+      if (!updatedTopic) {
+        return resSend(res, false, null, 'Topic was not found');
+      }
+      resSend(res, true, { updatedTopic }, 'Topic title updated successfully');
+    } catch (error) {
+      console.error(error);
+      resSend(res, false, null, 'Error updating topic title');
+    }
+  },
+  getSubTopicById: async (req, res) => {
+    try {
+      const { subTopicId } = req.params;
+      const subTopic = await topicSchema.findById(subTopicId);
+
+      if (!subTopic) {
+        resSend(res, false, null, `Subtopic with ID ${subTopicId} not found.`);
+        return;
+      }
+
+      resSend(res, true, { subTopic }, 'Subtopic fetched successfully.');
+    } catch (error) {
+      console.error('Error fetching subtopic:', error);
+      resSend(res, false, null, 'Error fetching subtopic.');
     }
   },
 };

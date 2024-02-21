@@ -6,7 +6,7 @@ const topicSchema = require('../schemas/topicSchema');
 module.exports = {
   createPost: async (req, res) => {
     try {
-      const { content } = req.body;
+      const { content, imageUrl, youtubeUrl } = req.body;
       const { topicId } = req.params;
 
       if (!mongoose.Types.ObjectId.isValid(topicId)) {
@@ -28,6 +28,8 @@ module.exports = {
         content,
         topic: topicId,
         createdBy: userId,
+        imageUrl,
+        youtubeUrl,
       });
       await newPost.save();
       return resSend(res, true, { post: newPost }, 'Post created');

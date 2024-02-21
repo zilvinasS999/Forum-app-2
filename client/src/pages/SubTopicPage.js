@@ -52,11 +52,11 @@ function SubTopicPage() {
           subtopics.map((subtopic, index) =>
             subtopic && subtopic.title ? (
               <SubTopicComp
-                key={subtopic._id || index} // fallback to index if _id is not available
+                key={subtopic._id || index}
                 title={subtopic.title}
                 answerCount={subtopic.answerCount || 0}
               />
-            ) : null // or you can handle the undefined subtopic case differently
+            ) : null
           )
         ) : (
           <p>No subtopics found or still loading...</p>

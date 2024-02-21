@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import OwnProfilePage from './pages/OwnProfilePage';
 import ForumPage from './pages/ForumPage';
 import SubTopicPage from './pages/SubTopicPage';
+import DiscussionPage from './pages/DiscussionPage';
 
 function App() {
   return (
@@ -18,7 +19,11 @@ function App() {
           <Route path='/login' element={<LoginPage />} />
           <Route path='/profile' element={<OwnProfilePage />} />
           <Route path='profile/:userId' element={<OwnProfilePage />} />
-          <Route path='/forum/:mainTopicId' element={<SubTopicPage />} />
+          <Route path='/:mainTopicId' element={<SubTopicPage />} />
+          <Route
+            path='/:mainTopicId/:discussionId'
+            element={<DiscussionPage />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

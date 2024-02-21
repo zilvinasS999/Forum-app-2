@@ -15,6 +15,7 @@ const {
   getAllTopicCounts,
   createSubTopic,
   getSubTopics,
+  getSubTopicById,
 } = require('../controllers/topicController');
 const {
   createPost,
@@ -57,6 +58,7 @@ router.get(
 router.get('/messages/:userId', tokenAuth, getMessagesForUser); // DONE
 router.get('/users/:userId', tokenAuth, getUserProfile); // DONE
 router.get('/topics/:mainTopicId/subtopics', tokenAuth, getSubTopics); // DONE
+router.get('/subtopics/:subTopicId', tokenAuth, getSubTopicById);
 
 router.put('/topics/:topicId', tokenAuth, updateTopicTitle); // DONE
 router.put('/posts/:postId', tokenAuth, updatePostContent); // DONE
