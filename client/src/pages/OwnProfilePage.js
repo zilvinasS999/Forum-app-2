@@ -1,10 +1,10 @@
+import React, { useEffect } from 'react';
 import NavbarComp from '../components/NavbarComp';
 import ImgComp from '../components/ImgComp';
 import TopicsComp from '../components/TopicsComp';
 import PostsComp from '../components/PostsComp';
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { useProfileStore } from '../store/myStore';
+import { useParams } from 'react-router-dom';
 
 function OwnProfilePage() {
   const { userId } = useParams();

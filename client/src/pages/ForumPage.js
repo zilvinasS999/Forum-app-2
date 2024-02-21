@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import NavbarComp from '../components/NavbarComp';
 import MainTopicComp from '../components/MainTopicComp';
 import { useAuthStore, useForumStore } from '../store/myStore';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 
 function ForumPage() {
-  const { token, isLoggedIn, role, username } = useAuthStore((state) => ({
-    token: state.token,
-    isLoggedIn: state.isLoggedIn,
-    role: state.role,
-    username: state.username,
-  }));
+  const { token, isLoggedIn, role, username, setRole } = useAuthStore(
+    (state) => ({
+      token: state.token,
+      isLoggedIn: state.isLoggedIn,
+      role: state.role,
+      username: state.username,
+      setRole: state.setRole,
+    })
+  );
   const { topics, fetchTopics, createTopic } = useForumStore((state) => ({
     topics: state.topics,
     fetchTopics: state.fetchTopics,
@@ -25,17 +27,13 @@ function ForumPage() {
     if (!isLoggedIn) {
       navigate('/login');
     } else {
+      const storedRole = localStorage.getItem('role');
+      if (storedRole && role !== storedRole) {
+        setRole(storedRole);
+      }
       fetchTopics();
     }
-  }, [isLoggedIn, navigate, fetchTopics]);
-
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     navigate('/login');
-  //   } else {
-  //     fetchTopics();
-  //   }
-  // }, [isLoggedIn, navigate, fetchTopics]);
+  }, [isLoggedIn, navigate, fetchTopics, setRole]); // Add setRole to the dependency array
 
   const handleCreateTopicClick = async () => {
     if (role !== 'admin') {

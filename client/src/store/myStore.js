@@ -15,8 +15,14 @@ export const useErrStore = create((set) => ({
 export const useAuthStore = create((set) => ({
   username: localStorage.getItem('username') || null,
   token: localStorage.getItem('token') || null,
-  isLoggedIn: Boolean(localStorage.getItem('token')),
+  isLoggedIn: !!localStorage.getItem('token'),
+  role: localStorage.getItem('role') || null,
   autoLoginEnabled: false,
+  setRole: (newRole) => {
+    localStorage.setItem('role', newRole);
+    set({ role: newRole });
+  },
+
   setToken: (token) => {
     localStorage.setItem('token', token);
     set({ token, isLoggedIn: true });

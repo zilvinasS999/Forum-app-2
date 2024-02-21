@@ -1,19 +1,10 @@
-import React, { useEffect } from 'react';
-import { useRef } from 'react';
-import { useAuthStore, useErrStore, useProfileStore } from '../store/myStore';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore, useErrStore } from '../store/myStore';
 
 function LoginPage() {
-  const {
-    setToken,
-    setIsLoggedIn,
-    setAutoLoginEnabled,
-    setUsername,
-    isLoggedIn,
-    setUserInfo,
-  } = useAuthStore();
-  const { error, success, setError, setSuccess, clearError, clearSuccess } =
-    useErrStore();
+  const { setUserInfo, isLoggedIn, setAutoLoginEnabled } = useAuthStore();
+  const { error, setError, clearError } = useErrStore();
   const navigate = useNavigate();
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -26,8 +17,6 @@ function LoginPage() {
 
   const login = async () => {
     clearError();
-    setSuccess(null);
-
     const user = {
       username: usernameRef.current.value,
       password: passwordRef.current.value,
@@ -44,24 +33,19 @@ function LoginPage() {
     try {
       const response = await fetch('http://localhost:2400/login', options);
       const data = await response.json();
-
-      console.log('Response data:', data);
-      if (!response.ok || !data.success) {
+      if (response.ok && data.success) {
+        setUserInfo({
+          username: data.data.username,
+          token: data.data.token,
+          role: data.data.role,
+        });
+        navigate('/');
+      } else {
         setError(data.message || 'Unable to log in. Please try again.');
-        return;
       }
-
-      setToken(data.data.token);
-      setUsername(data.data.username);
-      setUserInfo({
-        username: data.data.username,
-        token: data.data.token,
-        role: data.data.role,
-      });
-      navigate('/');
     } catch (error) {
       console.error('Login failed', error);
-      setError('An unexpected error. Please try again later.');
+      setError('An unexpected error occurred. Please try again later.');
     }
   };
 
