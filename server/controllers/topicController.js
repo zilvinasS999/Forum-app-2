@@ -127,13 +127,17 @@ module.exports = {
     }
   },
   createSubTopic: async (req, res) => {
-    const { title } = req.body;
+    const { title, description } = req.body; // Get the description from the request body
     const { mainTopicId } = req.params;
     const userId = req.user._id;
 
-    if (!title) {
+    if (!title || title.trim() === '') {
       return resSend(res, false, null, 'Title is required');
     }
+    if (!description || description.trim() === '') {
+      return resSend(res, false, null, 'Description is required');
+    }
+
     try {
       const mainTopicExists = await topicSchema.findById(mainTopicId);
       if (!mainTopicExists) {
@@ -142,10 +146,10 @@ module.exports = {
 
       const subTopic = new topicSchema({
         title,
-        description: '',
+        description,
         category: 'Default Category',
         mainTopic: mainTopicId,
-        createdBy: req.user._id,
+        createdBy: userId,
       });
       await subTopic.save();
 

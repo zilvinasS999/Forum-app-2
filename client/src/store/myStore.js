@@ -127,7 +127,16 @@ export const useProfileStore = create((set) => ({
 export const useForumStore = create((set) => ({
   topics: [],
   mainTopicTitle: '',
+  subtopicTitle: '',
+  subtopicDescription: '',
   setMainTopicTitle: (title) => set({ mainTopicTitle: title }),
+  setSubtopicTitle: (title) => set(() => ({ subtopicTitle: title })),
+  setSubtopicDescription: (description) =>
+    set(() => ({ subtopicDescription: description })),
+  addSubtopic: (newSubtopic) =>
+    set((state) => ({
+      subtopics: [...state.subtopics, newSubtopic],
+    })),
   fetchMainTopicTitle: async (mainTopicId, token) => {
     try {
       const response = await fetch(
@@ -141,7 +150,6 @@ export const useForumStore = create((set) => ({
       );
       const data = await response.json();
       if (response.ok && data.success) {
-        // Access the nested data object
         console.log('Setting main topic title:', data.data.topic.title);
         set({ mainTopicTitle: data.data.topic.title });
       } else {
@@ -238,7 +246,14 @@ export const useForumStore = create((set) => ({
       return { success: false, message: error.message };
     }
   },
-  createSubTopic: async (subtopicData, mainTopicId, token) => {
+  createSubTopic: async (mainTopicId, token) => {
+    const { subtopicTitle, subtopicDescription } = useForumStore.getState();
+
+    const subtopicData = {
+      title: subtopicTitle,
+      description: subtopicDescription,
+    };
+
     try {
       const response = await fetch(
         `http://localhost:2400/topics/${mainTopicId}/subtopics`,
@@ -248,14 +263,16 @@ export const useForumStore = create((set) => ({
             'Content-Type': 'application/json',
             Authorization: token,
           },
-          body: JSON.stringify({ title: subtopicData.title }),
+          body: JSON.stringify(subtopicData),
         }
       );
       const data = await response.json();
 
       if (response.ok && data.success) {
-        set((state) => ({
+        useForumStore.setState((state) => ({
           subtopics: [...state.subtopics, data.newSubtopic],
+          subtopicTitle: '',
+          subtopicDescription: '',
         }));
         return { success: true, newSubtopic: data.newSubtopic };
       } else {

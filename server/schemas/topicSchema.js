@@ -8,7 +8,7 @@ const topicSchema = new Schema({
   },
   description: {
     type: String,
-    required: false,
+    required: true,
   },
   mainTopic: {
     type: mongoose.Schema.Types.ObjectId,
