@@ -7,26 +7,32 @@ import { useParams } from 'react-router-dom';
 function SubTopicPage() {
   const { mainTopicId } = useParams();
   const { token } = useAuthStore();
-  const { subtopics, createSubTopic, fetchSubTopics } = useForumStore(
-    (state) => ({
-      subtopics: state.subtopics,
-      createSubTopic: state.createSubTopic,
-      fetchSubTopics: state.fetchSubTopics,
-    })
-  );
+  const {
+    subtopics,
+    createSubTopic,
+    fetchSubTopics,
+    mainTopicTitle,
+    fetchMainTopicTitle,
+  } = useForumStore((state) => ({
+    subtopics: state.subtopics,
+    createSubTopic: state.createSubTopic,
+    fetchSubTopics: state.fetchSubTopics,
+    mainTopicTitle: state.mainTopicTitle,
+    fetchMainTopicTitle: state.fetchMainTopicTitle,
+  }));
   const [subtopicTitle, setSubtopicTitle] = useState('');
-  // const [subtopicDescription, setSubtopicDescription] = useState('');
 
   useEffect(() => {
-    if (mainTopicId) {
+    if (mainTopicId && token) {
+      console.log('Requesting main topic with ID:', mainTopicId); // Log the ID being passed
       fetchSubTopics(mainTopicId, token);
+      fetchMainTopicTitle(mainTopicId, token);
     }
-  }, [mainTopicId, token, fetchSubTopics]);
+  }, [mainTopicId, token, fetchSubTopics, fetchMainTopicTitle]);
 
-  // || !subtopicDescription.trim()
   const handleCreateDiscussion = async () => {
     if (!subtopicTitle.trim()) {
-      alert('Title and description cannot be empty.');
+      alert('Title cannot be empty.');
       return;
     }
 
@@ -39,14 +45,13 @@ function SubTopicPage() {
     );
 
     if (result.success) {
-      // setSubtopicTitle('');
-      // setSubtopicDescription('');
+      setSubtopicTitle('');
       fetchSubTopics(mainTopicId, token);
     } else {
       alert(result.message || 'Failed to create subtopic. Please try again.');
     }
   };
-
+  console.log('Current main topic title state:', mainTopicTitle);
   return (
     <div>
       <header>
@@ -54,15 +59,19 @@ function SubTopicPage() {
       </header>
       <main className='subtopic-main'>
         <div className='subtopic-content'>
-          <h2>Main Topic: Cars</h2>
+          <h2>Main Topic: {mainTopicTitle || 'Loading...'}</h2>
           <div>
-            {subtopics.map((subtopic) => (
-              <SubTopicComp
-                key={subtopic._id}
-                title={subtopic.title}
-                answerCount={subtopic.answerCount}
-              />
-            ))}
+            {subtopics && subtopics.length > 0 ? (
+              subtopics.map((subtopic) => (
+                <SubTopicComp
+                  key={subtopic._id}
+                  title={subtopic.title}
+                  answerCount={subtopic.answerCount || 0}
+                />
+              ))
+            ) : (
+              <p>No subtopics found or still loading...</p>
+            )}
           </div>
           <div className='create-discussion-btn-container'>
             <input
@@ -71,11 +80,6 @@ function SubTopicPage() {
               value={subtopicTitle}
               onChange={(e) => setSubtopicTitle(e.target.value)}
             />
-            {/* <textarea
-              placeholder='Subtopic Description'
-              value={subtopicDescription}
-              onChange={(e) => setSubtopicDescription(e.target.value)}
-            /> */}
             <button
               type='button'
               className='create-discussion-btn'

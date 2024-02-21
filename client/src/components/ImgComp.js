@@ -1,55 +1,32 @@
-import React from 'react';
-import NavbarComp from '../components/NavbarComp';
-import MainTopicComp from '../components/MainTopicComp';
-import { useAuthStore, useForumStore } from '../store/myStore';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import React, { useState } from 'react';
+import { useProfileStore } from '../store/myStore';
 
-function ForumPage() {
-  const { isLoggedIn, username, role } = useAuthStore();
-  const { topics, fetchTopics } = useForumStore();
+const ImgComp = ({ image, userId }) => {
+  const [newImageUrl, setNewImageUrl] = useState('');
+  const { updateUserImage } = useProfileStore();
 
-  const navigate = useNavigate();
-  console.log('Topics state:', topics);
-  console.log('Topics Topics:', topics.topics);
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate('/login');
+  const handleImageUpdate = async () => {
+    const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
+    if (newImageUrl.trim() && token) {
+      await updateUserImage(newImageUrl, token);
+      setNewImageUrl(''); // Clear input field after update
     } else {
-      fetchTopics();
+      alert('Please enter a valid image URL.');
     }
-  }, [isLoggedIn, navigate, fetchTopics]);
-
-  console.log('Logged in as:', username);
-  // if (!Array.isArray(topics)) {
-  //   return <div>Loading...</div>;
-  // }
+  };
 
   return (
     <div>
-      <header>
-        <NavbarComp />
-      </header>
-      {isLoggedIn && <h1>Welcome, {username}!</h1>}
-      <main className='forum-page-main'>
-        <div className='main-topic-container'>
-          {topics.topics &&
-            topics.topics.map((topic) => (
-              <MainTopicComp
-                key={topic._id}
-                title={topic.title}
-                count={topic.count || 0}
-              />
-            ))}
-        </div>
-        {role === 'admin' && (
-          <div className='create-topic-btn-container'>
-            <button type='button'>Create Topic</button>
-          </div>
-        )}
-      </main>
+      <img src={image || 'default-image-url.png'} alt='Profile' />
+      <input
+        type='text'
+        value={newImageUrl}
+        onChange={(e) => setNewImageUrl(e.target.value)}
+        placeholder='Enter new image URL'
+      />
+      <button onClick={handleImageUpdate}>Update image</button>
     </div>
   );
-}
+};
 
-export default ForumPage;
+export default ImgComp;

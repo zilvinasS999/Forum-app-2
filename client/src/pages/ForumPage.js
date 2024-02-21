@@ -25,11 +25,7 @@ function ForumPage() {
     if (!isLoggedIn) {
       navigate('/login');
     } else {
-      fetchTopics().then(() => {
-        if (topics.topics) {
-          console.log('Topics Topics:', topics.topics);
-        }
-      });
+      fetchTopics();
     }
   }, [isLoggedIn, navigate, fetchTopics]);
 

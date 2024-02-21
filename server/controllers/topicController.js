@@ -69,13 +69,16 @@ module.exports = {
   getTopicById: async (req, res) => {
     try {
       const { topicId } = req.params;
+      console.log('Fetching topic with ID:', topicId); // Log the ID being requested
       const topic = await topicSchema.findById(topicId);
       if (!topic) {
+        console.log('Topic not found for ID:', topicId); // Log if the topic isn't found
         return resSend(res, false, null, 'Topic not found');
       }
+      console.log('Sending topic data:', topic); // Log the data being sent
       resSend(res, true, { topic }, 'Fetched topic successfully');
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching topic:', error);
       resSend(res, false, null, 'Error fetching topic');
     }
   },
@@ -124,14 +127,13 @@ module.exports = {
     }
   },
   createSubTopic: async (req, res) => {
-    const { title, description = '', category } = req.body;
+    const { title } = req.body;
     const { mainTopicId } = req.params;
     const userId = req.user._id;
 
     if (!title) {
-      return resSend(res, false, null, 'Title and description are required');
+      return resSend(res, false, null, 'Title is required');
     }
-
     try {
       const mainTopicExists = await topicSchema.findById(mainTopicId);
       if (!mainTopicExists) {
@@ -140,11 +142,10 @@ module.exports = {
 
       const subTopic = new topicSchema({
         title,
-        description,
-        category,
+        description: '',
+        category: 'Default Category',
         mainTopic: mainTopicId,
         createdBy: req.user._id,
-        mainTopic: mainTopicId,
       });
       await subTopic.save();
 

@@ -120,6 +120,34 @@ export const useProfileStore = create((set) => ({
 
 export const useForumStore = create((set) => ({
   topics: [],
+  mainTopicTitle: '',
+  setMainTopicTitle: (title) => set({ mainTopicTitle: title }),
+  fetchMainTopicTitle: async (mainTopicId, token) => {
+    try {
+      const response = await fetch(
+        `http://localhost:2400/topics/${mainTopicId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        }
+      );
+      const data = await response.json();
+      if (response.ok && data.success) {
+        // Access the nested data object
+        console.log('Setting main topic title:', data.data.topic.title);
+        set({ mainTopicTitle: data.data.topic.title });
+      } else {
+        console.error('Failed to fetch main topic title:', data.message);
+        set({ mainTopicTitle: 'Not Found' });
+      }
+    } catch (error) {
+      console.error('Network error fetching main topic title:', error);
+      set({ mainTopicTitle: 'Error Loading Topic' });
+    }
+  },
+
   setTopics: (topics) => set({ topics }),
   fetchTopics: async () => {
     try {
@@ -137,6 +165,7 @@ export const useForumStore = create((set) => ({
         set({ topics: data.data });
       } else {
         console.error('Failed to fetch topics:', data.message);
+        set({ subtopics: [] });
       }
     } catch (error) {
       console.error('Error fetching topics:', error);
@@ -155,13 +184,27 @@ export const useForumStore = create((set) => ({
         }
       );
       const data = await response.json();
+
+      console.log('Response from fetchSubTopics:', data);
+
       if (response.ok && data.success) {
-        set({ subtopics: data.subTopics });
+        const subTopics = data.data && data.data.subTopics;
+
+        if (Array.isArray(subTopics)) {
+          console.log('Subtopics data structure:', subTopics);
+
+          set({ subtopics: subTopics });
+        } else {
+          console.error('subTopics is not an array:', subTopics);
+          set({ subtopics: [] });
+        }
       } else {
         console.error('Failed to fetch subtopics:', data.message);
+        set({ subtopics: [] });
       }
     } catch (error) {
       console.error('Error fetching subtopics:', error);
+      set({ subtopics: [] });
     }
   },
   createTopic: async (topicData, token) => {
@@ -199,14 +242,13 @@ export const useForumStore = create((set) => ({
             'Content-Type': 'application/json',
             Authorization: token,
           },
-          body: JSON.stringify(subtopicData),
+          body: JSON.stringify({ title: subtopicData.title }),
         }
       );
       const data = await response.json();
 
       if (response.ok && data.success) {
         set((state) => ({
-          // Assuming subtopics are related to a specific topic and not all topics
           subtopics: [...state.subtopics, data.newSubtopic],
         }));
         return { success: true, newSubtopic: data.newSubtopic };
