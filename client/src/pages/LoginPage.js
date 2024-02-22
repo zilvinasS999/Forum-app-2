@@ -38,6 +38,7 @@ function LoginPage() {
           username: data.data.username,
           token: data.data.token,
           role: data.data.role,
+          userId: data.data.userId,
         });
         navigate('/');
       } else {

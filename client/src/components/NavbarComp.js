@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/myStore';
 
 function NavbarComp() {
-  const { logout, userId } = useAuthStore();
+  const { logout, userId } = useAuthStore((state) => ({
+    logout: state.logout,
+    userId: state.userId,
+  }));
+
   return (
     <div>
       <nav className='navbar'>
@@ -16,9 +20,7 @@ function NavbarComp() {
         </nav>
         <div className='nav-right'>
           <Link className='nav-link'>
-            <button onClick={() => useAuthStore.getState().logout()}>
-              Logout
-            </button>
+            <button onClick={logout}>Logout</button>
           </Link>
         </div>
       </nav>

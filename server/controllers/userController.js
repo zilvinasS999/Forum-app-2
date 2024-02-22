@@ -57,7 +57,12 @@ module.exports = {
         process.env.JWT_SECRET
       );
 
-      const responseBody = { token, username, role: user.role };
+      const responseBody = {
+        token,
+        username,
+        role: user.role,
+        userId: user._id,
+      };
       console.log('Response being sent:', responseBody);
       return resSend(res, true, responseBody, 'all good');
     } catch (error) {
@@ -68,11 +73,11 @@ module.exports = {
   getUserProfile: async (req, res) => {
     try {
       const { userId } = req.params;
-      const requestId = req.user._id;
+      // const requestId = req.user._id;
 
-      if (userId !== requestId) {
-        return resSend(res, false, null, 'Unauthorized access');
-      }
+      // if (userId !== requestId) {
+      //   return resSend(res, false, null, 'Unauthorized access');
+      // }
 
       const userProfile = await userSchema
         .findById(userId)

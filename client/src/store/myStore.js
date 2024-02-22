@@ -17,6 +17,7 @@ export const useAuthStore = create((set) => ({
   token: localStorage.getItem('token') || null,
   isLoggedIn: !!localStorage.getItem('token'),
   role: localStorage.getItem('role') || null,
+  userId: localStorage.getItem('userId') || null,
   autoLoginEnabled: false,
   setRole: (newRole) => {
     localStorage.setItem('role', newRole);
@@ -31,16 +32,21 @@ export const useAuthStore = create((set) => ({
     localStorage.setItem('username', username);
     set({ username });
   },
+  setUserId: (userId) => {
+    localStorage.setItem('userId', userId);
+    set({ userId });
+  },
   setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
   setAutoLoginEnabled: (enabled) => {
     localStorage.setItem('autologin', enabled ? 'true' : 'false');
     set({ autoLoginEnabled: enabled });
   },
-  setUserInfo: ({ username, token, role }) => {
+  setUserInfo: ({ username, token, role, userId }) => {
     localStorage.setItem('token', token);
     localStorage.setItem('username', username);
     localStorage.setItem('role', role);
-    set({ token, username, role, isLoggedIn: true });
+    localStorage.setItem('userId', userId);
+    set({ token, username, role, userId, isLoggedIn: true });
   },
 
   logout: () => {
@@ -48,11 +54,13 @@ export const useAuthStore = create((set) => ({
     localStorage.removeItem('username');
     localStorage.removeItem('autologin');
     localStorage.removeItem('role');
+    localStorage.removeItem('userId');
     set({
       isLoggedIn: false,
       token: null,
       username: null,
       role: null,
+      userId: null,
       autoLoginEnabled: false,
     });
     window.location.href = '/login';
@@ -66,8 +74,8 @@ export const useProfileStore = create((set) => ({
     try {
       const response = await fetch(`http://localhost:2400/users/${userId}`, {
         headers: {
-          Authorization: token,
           'Content-Type': 'application/json',
+          Authorization: token,
         },
       });
       const data = await response.json();
