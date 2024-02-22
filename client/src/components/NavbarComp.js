@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthStore } from '../store/myStore';
+import { useAuthStore, useForumStore } from '../store/myStore';
 
 function NavbarComp() {
   const { logout, userId } = useAuthStore((state) => ({
     logout: state.logout,
     userId: state.userId,
+  }));
+
+  const { mainTopicId } = useAuthStore((state) => ({
+    mainTopicId: state.mainTopicId,
   }));
 
   return (
@@ -15,13 +19,19 @@ function NavbarComp() {
           <Link to={`/profile/${userId}`} className='nav-link'>
             My Profile
           </Link>
-          <Link className='nav-link'>Forum</Link>
+          <Link to='/' className='nav-link'>
+            Forum
+          </Link>
           <Link className='nav-link'>Messages</Link>
         </nav>
+
+        <Link className='nav-link'></Link>
+
+        <Link to={`/${mainTopicId}`} className='nav-link'>
+          SubTopics
+        </Link>
         <div className='nav-right'>
-          <Link className='nav-link'>
-            <button onClick={logout}>Logout</button>
-          </Link>
+          <button onClick={logout}>Logout</button>
         </div>
       </nav>
     </div>

@@ -55,7 +55,7 @@ function DiscussionPage() {
         )}
 
         {userProfile ? (
-          <section className='user-profile-info'>{/* ... */}</section>
+          <section className='user-profile-info'></section>
         ) : (
           <p>Loading user profile...</p>
         )}
